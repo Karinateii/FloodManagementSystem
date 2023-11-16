@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "Admin Page";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h3 class="mt-5 text-center">Welcome, Admin</h3>
+<table class="table mt-5 text-dark ml-2 text-center table-striped" style="border-left: 5px solid; border-right: 5px solid">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="text-white">
+            <td>Users</td>
+            <td>
+                <a asp-action="Index" asp-controller="User">View</a>
+            </td>
+        </tr>
+        <tr>
+            <td>LGAs</td>
+            <td>
+                <a asp-action="CreateLGA" asp-controller="LGA">New</a> |
+                <a asp-action="Index" asp-controller="LGA">Edit</a> |
+                <a asp-action="DeleteLGA" asp-controller="LGA">Delete</a>
+            </td>
+        </tr>
+        <tr class="text-white">
+            <td>Cities</td>
+            <td>
+                <a asp-action="CreateCity" asp-controller="City">New</a> |
+                <a asp-action="Edit" asp-controller="City">Edit</a> |
+                <a asp-action="DeleteCity" asp-controller="City">Delete</a>
+            </td>   
+        </tr>
+        <tr>
+            <td>Files</td>
+            <td>
+                <a asp-action="Upload" asp-controller="CsvFile">Training File</a> |
+                <a asp-action="Upload" asp-controller="CsvFileCity">Prediction File</a> |
+                <a asp-action="Delete" asp-controller="CsvFile">Delete</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+

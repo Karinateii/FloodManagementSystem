@@ -1,0 +1,188 @@
+﻿@{
+    ViewData["Title"] = "Home page";
+    string username = User.Identity.Name;
+}
+
+
+
+<div class="wrapper bgded overlay" style="background-image:url('images/demo/backgrounds/flood1.jpg'); background-position:center">
+    <div id="pageintro" class="hoc clear">
+        <!-- ################################################################################################ -->
+        <div class="text-right">
+            @if (User.IsInRole("user"))
+            {
+                <h4>Welcome, @username</h4>
+            }
+        </div>
+        <article>
+            <h2 class="heading">Stay on top of the flood situation</h2>
+            <p>Get up-to-date flood statistics via Nimet's more than 5 observatories in Lagos State</p>
+            @if (!User.IsInRole("user"))
+            {
+                <footer><a asp-area="" asp-controller="UserAuthentication" asp-action="Register" class="btn">Register for our Early Warning Email System</a></footer>
+            }
+        </article>
+        <!-- ################################################################################################ -->
+    </div>
+</div>
+<!-- ################################################################################################ -->
+
+<div class="wrapper row3">
+    <main class="hoc container clear">
+        <!-- main body -->
+        <!-- ################################################################################################ -->
+        <div class="sectiontitle">
+            <h6 class="heading">What to do in a flood</h6>
+            <p>In the situation of the inevitable; here are some tips that can help save you </p>
+        </div>
+        <ul class="nospace group services">
+            <li class="one_third first">
+                <article class="infobox">
+                    <h6 class="heading"><i class="fa fa-joomla"></i> <a href="#">Plan Ahead</a></h6>
+                    <p>Emergency kit should be at hand things inside it should include: torch, spare batteries, mobile phone, warm clothes, important numbers, water, food, first aid, medicines, and babycare items. [&hellip;]</p>
+                </article>
+            </li>
+            <li class="one_third">
+                <article class="infobox">
+                    <h6 class="heading"><i class="fa fa-key"></i> <a href="#">Avoid the flood water</a></h6>
+                    <p>Avoid driving or walking through flood water, as it can move quickly and knock you off your feet. [&hellip;]</p>
+                </article>
+            </li>
+            <li class="one_third">
+                <article class="infobox">
+                    <h6 class="heading"><i class="fa fa-balance-scale"></i> <a href="#">Move to higher ground</a></h6>
+                    <p>Moving to higher ground is important because it reduces your risk of being swept away by the floodwaters or becoming trapped in a dangerous situation. Floodwaters can be very powerful and can easily sweep people and vehicles away. [&hellip;]</p>
+                </article>
+            </li>
+            <li class="one_third first">
+                <article class="infobox">
+                    <h6 class="heading"><i class="fa fa-mixcloud"></i> <a href="#">Wait for Emergency workers </a></h6>
+                    <p>Waiting for rescue is an important step in staying safe during a flood. If you are unable to evacuate or reach higher ground, it is important to call for help and wait for rescue personnel to arrive. [&hellip;]</p>
+                </article>
+            </li>
+            <li class="one_third">
+                <article class="infobox">
+                    <h6 class="heading"><i class="fa fa-bug"></i> <a href="#">Follow instructions</a></h6>
+                    <p>When rescue personnel arrive, listen carefully to their instructions and follow them closely. They may have specific procedures for safely evacuating the area. [&hellip;]</p>
+                </article>
+            </li>
+            <li class="one_third">
+                <article class="infobox">
+                    <h6 class="heading"><i class="fa fa-pied-piper-alt"></i> <a href="#">Be Prepared</a></h6>
+                    <p> While waiting for rescue, it is important to stay prepared. Keep emergency supplies on hand, such as food, water, and a first aid kit. Stay connected with your phone or other communication devices so that you can stay in contact with rescue personnel. [&hellip;]</p>
+                </article>
+            </li>
+        </ul>
+        <!-- ################################################################################################ -->
+        <!-- / main body -->
+        <div class="clear"></div>
+    </main>
+</div>
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<div class="wrapper bgded overlay" style="background-image:url('../images/demo/backgrounds/flood3.jpg'); background-position: 50% 80%">
+    <div class="hoc container clear">
+        <!-- ################################################################################################ -->
+        <div class="flexslider testimonials">
+            <ul class="slides">
+@*                <li>
+                    <h2 class="heading">Stay on top of the flood situaton</h2>
+                    <p>Get up-to-date flood statistics via Nimet's more than 5 observatories in Lagos State</p>
+                    <footer><a class="btn" href="#">Register for our Earl Warning Email System</a></footer>
+                </li>
+*@               
+                <li>
+                    <article>
+                        <img class="circle" src="../images/demo/borland.jpeg" alt="" style="height: 80px">
+                        <blockquote style="font-size: 11px; line-height: 17.3px">
+                            When we talk of flood control, we usually think of dams and deeper river channels, to impound the waters or hurry their run-off.
+                            Yet neither is the ultimate solution, simply because floods are caused by the flow of water downhill. If the hills are wooded, that flow is checked.
+                            If there is a swamp at the foot of the hills, the swamp sponges up most of the excess water, restores some of it to the underground water supply and feeds the remainder slowly into the streams.
+                            Strip the hills, drain the boglands, and you create flood conditions inevitably. Yet that is what we have been doing for years.
+                        </blockquote>
+                        <ul class="nospace starating">
+                            <li><i class="fa fa-star"></i></li>
+                            <li><i class="fa fa-star"></i></li>
+                            <li><i class="fa fa-star"></i></li>
+                            <li><i class="fa fa-star"></i></li>
+                            <li><i class="fa fa-star"></i></li>
+                        </ul>
+                        <h6 class="heading" style="line-height: 1px">Hal Borland</h6>
+                    </article>
+                </li>
+                <li>
+                    <article>
+                        <img class="circle" src="../images/demo/shakespeare.jpeg" alt="" style="height: 100px">
+                        <blockquote>Great floods have flown from simple sources.</blockquote>
+                        <ul class="nospace starating">
+                            <li><i class="fa fa-star"></i></li>
+                            <li><i class="fa fa-star"></i></li>
+                            <li><i class="fa fa-star"></i></li>
+                            <li><i class="fa fa-star-half-o"></i></li>
+                            <li><i class="fa fa-star-o neutral"></i></li>
+                        </ul>
+                        <h6 class="heading">William Shakespeare</h6>
+                    </article>
+                </li>
+                <li>
+                    <article><img class="circle" src="../images/demo/ruskin.jpeg" alt="" style="height: 100px; width: 120px">
+                        <blockquote>No individual rain drop ever considers itself responsible for the flood.</blockquote>
+                        <ul class="nospace starating">
+                            <li><i class="fa fa-star"></i></li>
+                            <li><i class="fa fa-star"></i></li>
+                            <li><i class="fa fa-star"></i></li>
+                            <li><i class="fa fa-star-half-o"></i></li>
+                            <li><i class="fa fa-star-o neutral"></i></li>
+                        </ul>
+                        <h6 class="heading">John Ruskin</h6>
+                    </article>
+                </li>
+            </ul>
+        </div>
+        <!-- ################################################################################################ -->
+    </div>
+</div>
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<div class="wrapper row2">
+    <section class="hoc container clear">
+        <!-- This space is here to direct users toward exploring the relif of their areas in lagos -->
+        <div class="sectiontitle">
+            <h6 class="heading">Browse through flood prone neighbourhoods</h6>
+            <p>Check through our directories to see the applicable relief of the neighbourhood you live in and if it is proone to flooding.</p>
+        </div>
+        <ul class="nospace group elements">
+            <li class="one_third first">
+                <article>
+                    <a href="#"></a>
+                    <h6 class="heading">Lagos Island</h6>
+                    <p>Browse through areas within lagos island  and see flood probability. [&hellip;]</p>
+                    <footer><a href="#"> Check here&raquo;</a></footer>
+                </article>
+            </li>
+            <li class="one_third">
+                <article>
+                    <a href="#"></a>
+                    <h6 class="heading">Lagos: Surulere and Surrounding Areas</h6>
+                    <p>Browse through areas within lagos island  and see flood probability. [&hellip;]</p>
+                    <footer><a href="#"> Check here &raquo;</a></footer>
+                </article>
+            </li>
+            <li class="one_third">
+                <article>
+                    <a href="#"></a>
+                    <h6 class="heading">Lagos: Ikorodu & Epe </h6>
+                    <p>Browse through areas around Ikorodu & Epe and see their flood probability. [&hellip;]</p>
+                    <footer><a href="#"> Check here &raquo;</a></footer>
+                </article>
+            </li>
+        </ul>
+        <!-- ################################################################################################ -->
+        <div class="clear"></div>
+    </section>
+</div>
+
+
+

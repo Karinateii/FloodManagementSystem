@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LagosFloodManagementSystem</title>
+    <link rel="stylesheet" href="~/css/layout.css" type="text/css" media="all" asp-append-version="true" />    
+@*    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+*@    
+@*    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />*@
+@*    <link rel="stylesheet" href="~/LagosFloodManagementSystem.styles.css" asp-append-version="true" />
+*@</head>
+<body id="top">
+    <div class="wrapper row1">
+        <header id="header" class="hoc clear">
+            <div class="fl_left" id="logo">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LASFWS</a>
+                @*                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>*@
+            </div>
+            <nav id="mainav" class="fl_right">
+                <ul class="clear">
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li>
+                        <a class="nav-link text-dark drop" asp-area="" asp-page="">Tips</a>
+                        <ul>
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Tips" asp-action="WhatToDo">What To Do In A Flood</a></li>
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Tips" asp-action="Planning">Planning Ahead</a></li>
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Tips" asp-action="ReportFlood">Report a Flood</a></li>
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Tips" asp-action="FloodRisks">Flood Risks</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="nav-link text-dark drop" asp-area="" asp-page="">Area Relief</a>
+                        <ul>
+                            <li><a class="nav-link text-dark drop" asp-area="" asp-controller="LGAAreas" asp-action="Mainland">Lagos Mainland</a>
+                                <ul>
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="LGAAreas" asp-action="Ikorodu">Ikorodu</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="LGAAreas" asp-action="Ikeja">Ikeja &amp; Environs</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="LGAAreas" asp-action="Surulere">Surulere &amp; Environs</a></li>
+                                </ul>
+                            </li>
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="LGAAreas" asp-action="Island">Lagos Island</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="ContactForms" asp-action="AboutUs">About Us</a>
+                    </li>
+                    @if (User.IsInRole("user"))
+                    {
+                        <li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="FloodData" asp-action="Predictions">Flood Forecast</a>
+                        </li>
+                    }
+                    <li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="ContactForms" asp-action="ContactUs">Contact Us</a>
+                    </li>
+                    @if (!User.IsInRole("user"))
+                    {
+                        <li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="UserAuthentication" asp-action="Register">Register</a>
+                        </li>
+                        <li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="UserAuthentication" asp-action="Login">Login</a>
+                        </li>
+                    }
+                    @if (User.IsInRole("user"))
+                    {
+                        <li>
+@*                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Detail">Account</a>
+                        *@                            
+@*                        @Html.ActionLink("Account", "Detail", "Home", new { id = await GetCurrentUserIdAsync(User) }, null)*@
+                            <a href="@Url.Action("Detail", "UserAuthentication")">Account</a>
+                        </li>
+                        <li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="UserAuthentication" asp-action="Logout">Logout</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </header>
+    </div>
+    <div>
+        <main role="main" style="padding-bottom:0" class="mb-5">
+            @RenderBody()
+        </main>
+    </div>
+
+    <div class="wrapper row4 mt-5">
+        <footer id="footer" class="hoc clear">
+            <!-- ################################################################################################ -->
+            <h6 class="heading">LASFWS</h6>
+            <p>This is a prototype system for prediction and early warning for Lagosians. This system is free and aims to serve the public in its disbursement of vital Information. </p>
+@*            <ul class="faico clear">
+                <li><a class="faicon-facebook" href="#"><i class="fa fa-facebook"></i></a></li>
+                <li><a class="faicon-twitter" href="#"><i class="fa fa-twitter"></i></a></li>
+                <li><a class="faicon-dribble" href="#"><i class="fa fa-dribbble"></i></a></li>
+                <li><a class="faicon-linkedin" href="#"><i class="fa fa-linkedin"></i></a></li>
+                <li><a class="faicon-google-plus" href="#"><i class="fa fa-google-plus"></i></a></li>
+                <li><a class="faicon-vk" href="#"><i class="fa fa-vk"></i></a></li>
+            </ul>
+*@            <nav>
+                <ul class="nospace">
+                    <li><a href="#"><i class="fa fa-lg fa-home"></i></a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Disclaimer</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </nav>
+            <!-- ################################################################################################ -->
+
+            <div class="wrapper row2 mt-5 pt-0 pb-0">
+                <div id="copyright" class="hoc clear pt-5 pb-0 mb-0">
+                    <p class="text-center">Copyright &copy; 2023 - All Rights Reserved - <a asp-area="" asp-controller="Home" asp-action="Index">LASFWS</a></p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <a id="backtotop" href="#top"><i class="fa fa-chevron-up"></i></a>
+
+    <script src="~/js/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.backtotop.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.mobilemenu.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.flexslider-min.js" asp-append-version="true"></script>
+    <script src="~/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/slidingpanes.js" asp-append-version="true"></script>
+    <script src="~/js/hoover cards.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

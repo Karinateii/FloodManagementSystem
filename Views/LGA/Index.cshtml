@@ -1,0 +1,48 @@
+﻿@model IEnumerable<NewLagosFloodDetectionSystem.Models.LGA>
+
+@{
+    ViewData["Title"] = "LGAs";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Local Government Areas In Lagos</h2>
+
+<p>
+    <a asp-action="CreateLGA">Create New</a>
+</p>
+<table class="table text-dark">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LGAName)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+            <tr>
+                <td>
+                    None
+                </td>
+                <td>
+                    Constant
+@*                    <a asp-action="EditLGA" asp-route-id="@item.LGAId">Edit</a> |
+                    <a asp-action="LGADetails" asp-route-id="@item.LGAId">Details</a> |
+                    <a asp-action="DeleteLGA" asp-route-id="@item.LGAId">Delete</a>
+*@                </td>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LGAName)
+                    </td>
+                    <td>
+                       <a asp-action="Edit" asp-route-id="@item.LGAId">Edit</a> |
+                        <a asp-action="Detail" asp-route-id="@item.LGAId">Details</a> |
+                        <a asp-action="DeleteLGA" asp-route-id="@item.LGAId">Delete</a>
+                    </td>
+               </tr>
+            }
+    </tbody>
+</table>

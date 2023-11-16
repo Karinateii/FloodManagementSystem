@@ -1,0 +1,106 @@
+﻿@model NewLagosFloodDetectionSystem.Models.DTO.RegistrationModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<div class="card" style="margin-top:10%; margin-right:25%; margin-bottom:10%; margin-left:25%">
+    <div class="card-title m-0" style="background-color: #7c452b">
+        <h2 class="text-white text-center p-3">Register for Email Early Warning System</h2>
+    </div>
+    <div class="card-body" style="background-color: #e4c35a;">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="form-group col-md-12 mb-2 row text-dark fw-semibold">
+                    <label asp-for="UserName" class="col-md-6">Name: </label>
+                    <input asp-for="UserName" placeholder="--Please enter your name--" class="col-md-6 form-control mb-2" spellcheck="false" required>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-12 mb-2 row text-dark fw-semibold">
+                    <label asp-for="Email" class="col-md-6">Email Address: </label>
+                    <input asp-for="Email" placeholder="--Please enter your email address--" class="col-md-6 form-control mb-2" spellcheck="false" required>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-12 mb-2 row text-dark fw-semibold">
+                    <label asp-for="Password" class="col-md-6">Password: </label>
+                    <input asp-for="Password" placeholder="--Please enter a password--" class="col-md-6 form-control mb-2" spellcheck="false" required>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-12 mb-2 row text-dark fw-semibold">
+                    <label asp-for="PasswordConfirm" class="col-md-6">Re-type Password: </label>
+                    <input asp-for="PasswordConfirm" placeholder="--Please re-type your password--" class="col-md-6 form-control mb-2" spellcheck="false" required>
+                    <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-12 row text-dark fw-semibold">
+                    <label for="lga" class="col-md-6">Select LGA:</label>
+                    <select asp-for="LGAId" id="lga" class="form-control col-md-6" asp-items="@ViewBag.lgas">
+                        <option value="">-- Select LGA --</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-12 row text-dark fw-semibold">
+                    <label for="city" class="col-md-6">Select City:</label>
+                    <select asp-for="CityId" id="city" class="form-control col-md-6">
+                    </select>
+                </div>
+            </div>
+            <input type="submit" name="submit" class="btn btn-success" value="Submit" />
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var lgaSelect = document.querySelector('#lga');
+            lgaSelect.addEventListener('change', function () {
+                var lgaId = this.value;
+                if (lgaId) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            var cities = JSON.parse(xhr.responseText);
+                            var items = '<option value="">-- Select City --</option>';
+                            cities.forEach(function (city) {
+                                items += '<option value="' + city.id + '">' + city.name + '</option>';
+                            });
+                            document.querySelector('#city').innerHTML = items;
+                        }
+                    };
+                    xhr.open('GET', '/UserAuthentication/GetCitiesByLGA?LGAId=' + encodeURIComponent(lgaId), true);
+                    xhr.send();
+                } else {
+                    document.querySelector('#city').innerHTML = '';
+                }
+            });
+        });
+    </script>
+    @*    <script type="text/javascript">
+        $('#Country').change(function () {
+            var selectedLGA = $("#LGA").val();
+            var citiesSelect = $('#City');
+            citiesSelect.empty();
+            if (selectedLGA != null && selectedLGA != '') {
+                $.getJSON('@Url.Action("GetCities")', { LGAId: selectedLGA }, function (cities) {
+                    if (cities != null && !jQuery.isEmptyObject(cities)) {
+                        citiesSelect.append($('<option/>', {
+                            value: null,
+                            text: ""
+                        }));
+                        $.each(cities, function (index, city) {
+                            citiesSelect.append($('<option/>', {
+                                value: city.Value,
+                                text: city.Text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+    </script>
+*@
+
+}

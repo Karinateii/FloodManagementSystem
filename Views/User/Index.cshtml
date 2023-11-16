@@ -1,0 +1,51 @@
+﻿@model IEnumerable<NewLagosFloodDetectionSystem.Models.User>
+
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2 class="text-center mt-5">Users In Lagos</h2>
+
+
+<table class="table mb-5 mt-5 ml-2">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>                
+                @Html.DisplayNameFor(model => model.LGA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-dark">
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td class="text-dark">
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td class="text-dark">
+                    @Html.DisplayFor(modelItem => item.LGA)
+                </td>
+                <td class="text-dark">
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
