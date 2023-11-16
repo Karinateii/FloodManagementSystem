@@ -283,7 +283,7 @@ namespace NewLagosFloodDetectionSystem.Controllers
                 MailMessage mail = new MailMessage();
                 SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
 
-                mail.From = new MailAddress("karinateidoutimiwei@gmail.com");
+                mail.From = new MailAddress("##");
                 foreach (var user in users)
                 {
                     mail.To.Add(user.Email);
@@ -292,7 +292,7 @@ namespace NewLagosFloodDetectionSystem.Controllers
                 }
 
                 SmtpServer.Port = 587;
-                SmtpServer.Credentials = new System.Net.NetworkCredential("karinateidoutimiwei@gmail.com", "puhziotjpdotvrtj");
+                SmtpServer.Credentials = new System.Net.NetworkCredential("##", "##");
                 SmtpServer.EnableSsl = true;
 
                 SmtpServer.Send(mail);
