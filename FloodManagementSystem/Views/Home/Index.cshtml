@@ -1,0 +1,321 @@
+@{
+    ViewData["Title"] = Localizer["Home"];
+    string username = User.Identity?.Name ?? "User";
+}
+
+<!-- Hero Section -->
+<section class="hero-section position-relative" style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); min-height: 500px; color: white;">
+    <div class="container py-5">
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-8 py-5">
+                @if (User.IsInRole("user"))
+                {
+                    <div class="alert alert-light mb-4" style="background: rgba(255,255,255,0.15); border: none; backdrop-filter: blur(10px);">
+                        <h5 class="text-white mb-0">
+                            <i class="fas fa-user-circle me-2"></i>@string.Format(Localizer["WelcomeUser"], username)
+                        </h5>
+                    </div>
+                }
+                <h1 class="display-4 fw-bold mb-4">@Localizer["StayAheadDisaster"]</h1>
+                <p class="lead mb-4">@Localizer["GetUpdatedStatistics"]</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    @if (!User.IsInRole("user"))
+                    {
+                        <a asp-controller="UserAuthentication" asp-action="Register" class="btn btn-light btn-lg px-4">
+                            <i class="fas fa-user-plus me-2"></i>@Localizer["RegisterEarlyWarning"]
+                        </a>
+                    }
+                    <a asp-controller="Incident" asp-action="Report" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Report Incident
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Stats Section (if user is logged in) -->
+@if (User.IsInRole("user"))
+{
+    <section class="py-4" style="background: linear-gradient(to bottom, var(--primary-color), white); margin-top: -2rem;">
+        <div class="container">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="card modern-card text-center py-3" style="background: white;">
+                        <div class="card-body">
+                            <i class="fas fa-exclamation-circle fa-2x text-danger mb-2"></i>
+                            <h4 class="mb-0 fw-bold">@(ViewBag.ActiveIncidents ?? 0)</h4>
+                            <small class="text-muted">Active Incidents</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card modern-card text-center py-3" style="background: white;">
+                        <div class="card-body">
+                            <i class="fas fa-home fa-2x text-success mb-2"></i>
+                            <h4 class="mb-0 fw-bold">@(ViewBag.AvailableShelters ?? 0)</h4>
+                            <small class="text-muted">Available Shelters</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card modern-card text-center py-3" style="background: white;">
+                        <div class="card-body">
+                            <i class="fas fa-satellite-dish fa-2x text-info mb-2"></i>
+                            <h4 class="mb-0 fw-bold">@(ViewBag.ActiveSensors ?? 0)</h4>
+                            <small class="text-muted">IoT Sensors</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card modern-card text-center py-3" style="background: white;">
+                        <div class="card-body">
+                            <i class="fas fa-bell fa-2x text-warning mb-2"></i>
+                            <h4 class="mb-0 fw-bold">@(ViewBag.ActiveAlerts ?? 0)</h4>
+                            <small class="text-muted">Active Alerts</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Safety Tips Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">@Localizer["WhatToDoInDisaster"]</h2>
+            <p class="text-muted lead">@Localizer["DisasterTips"]</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card modern-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-clipboard-list fa-3x" style="color: var(--primary-color);"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-3">@Localizer["PlanAhead"]</h5>
+                        <p class="card-text text-muted">@Localizer["PlanAheadDesc"]</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card modern-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-water fa-3x" style="color: var(--info-color);"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-3">Stay Clear of Danger</h5>
+                        <p class="card-text text-muted">Avoid hazardous areas and follow safety guidelines during emergencies</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card modern-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-mountain fa-3x" style="color: var(--success-color);"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-3">@Localizer["MoveHigherGround"]</h5>
+                        <p class="card-text text-muted">@Localizer["MoveHigherGroundDesc"]</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card modern-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-ambulance fa-3x" style="color: var(--danger-color);"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-3">@Localizer["WaitEmergencyWorkers"]</h5>
+                        <p class="card-text text-muted">@Localizer["WaitEmergencyWorkersDesc"]</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card modern-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-tasks fa-3x" style="color: var(--warning-color);"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-3">@Localizer["FollowInstructions"]</h5>
+                        <p class="card-text text-muted">@Localizer["FollowInstructionsDesc"]</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card modern-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-shield-alt fa-3x" style="color: var(--secondary-color);"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-3">@Localizer["BePrepared"]</h5>
+                        <p class="card-text text-muted">@Localizer["BePreparedDesc"]</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(30, 64, 175, 0.05) 100%);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">@Localizer["ExpertInsights"]</h2>
+            <p class="text-muted lead">Wisdom from environmental experts</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card modern-card h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img class="rounded-circle me-3" src="../images/demo/borland.jpeg" alt="Hal Borland" style="width: 60px; height: 60px; object-fit: cover;">
+                            <div>
+                                <h6 class="mb-0 fw-bold">Hal Borland</h6>
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <blockquote class="mb-0">
+                            <p class="fst-italic text-muted small">
+                                "When we talk of flood control, we usually think of dams and deeper river channels. 
+                                Yet neither is the ultimate solution. If the hills are wooded, that flow is checked. 
+                                Strip the hills, drain the boglands, and you create flood conditions inevitably."
+                            </p>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card modern-card h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img class="rounded-circle me-3" src="../images/demo/shakespeare.jpeg" alt="William Shakespeare" style="width: 60px; height: 60px; object-fit: cover;">
+                            <div>
+                                <h6 class="mb-0 fw-bold">William Shakespeare</h6>
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <blockquote class="mb-0">
+                            <p class="fst-italic text-muted">
+                                "Great floods have flown from simple sources."
+                            </p>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card modern-card h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img class="rounded-circle me-3" src="../images/demo/ruskin.jpeg" alt="John Ruskin" style="width: 60px; height: 60px; object-fit: cover;">
+                            <div>
+                                <h6 class="mb-0 fw-bold">John Ruskin</h6>
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <blockquote class="mb-0">
+                            <p class="fst-italic text-muted">
+                                "No individual rain drop ever considers itself responsible for the flood."
+                            </p>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">@Localizer["ExploreRiskAssessments"]</h2>
+            <p class="text-muted lead">Check disaster probability and preparedness information for your area</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card modern-card h-100" style="border-left: 4px solid var(--primary-color);">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-map-marked-alt fa-2x me-3" style="color: var(--primary-color);"></i>
+                            <div>
+                                <h5 class="card-title fw-bold mb-2">Regional Risk Assessment</h5>
+                                <p class="card-text text-muted mb-3">View comprehensive disaster risk data and historical patterns for your region.</p>
+                                <a asp-controller="City" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                                    Explore Regions <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card modern-card h-100" style="border-left: 4px solid var(--success-color);">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-chart-line fa-2x me-3" style="color: var(--success-color);"></i>
+                            <div>
+                                <h5 class="card-title fw-bold mb-2">Disaster Analytics</h5>
+                                <p class="card-text text-muted mb-3">Access real-time analytics and predictive models for disaster preparedness.</p>
+                                <a asp-controller="Analytics" asp-action="Dashboard" class="btn btn-sm btn-outline-success">
+                                    View Analytics <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card modern-card h-100" style="border-left: 4px solid var(--warning-color);">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="fas fa-satellite-dish fa-2x me-3" style="color: var(--warning-color);"></i>
+                            <div>
+                                <h5 class="card-title fw-bold mb-2">IoT Monitoring Network</h5>
+                                <p class="card-text text-muted mb-3">Track real-time sensor data from weather stations and monitoring devices.</p>
+                                <a asp-controller="IoTMonitoring" asp-action="Index" class="btn btn-sm btn-outline-warning">
+                                    Monitor Now <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+

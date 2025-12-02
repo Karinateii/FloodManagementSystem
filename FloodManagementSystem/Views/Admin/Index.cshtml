@@ -1,0 +1,160 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<!-- Modern Admin Dashboard -->
+<div class="container-fluid py-4">
+    <!-- Welcome Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card modern-card border-0 shadow-sm" style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle p-3 me-3" style="background: rgba(255,255,255,0.2);">
+                            <i class="fas fa-user-shield fa-2x text-white"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-white mb-1">Welcome, Administrator</h2>
+                            <p class="text-white mb-0 opacity-75">Manage your disaster management system</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Cards -->
+    <div class="row g-4">
+        <!-- Users Management -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card modern-card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                            <i class="fas fa-users fa-lg text-white"></i>
+                        </div>
+                        <h5 class="mb-0 fw-bold">Users</h5>
+                    </div>
+                    <p class="text-muted mb-3">Manage registered users and their access</p>
+                    <a asp-action="Index" asp-controller="User" class="btn btn-primary w-100">
+                        <i class="fas fa-eye me-2"></i>View Users
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Regions Management -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card modern-card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            <i class="fas fa-map-marked-alt fa-lg text-white"></i>
+                        </div>
+                        <h5 class="mb-0 fw-bold">Regions</h5>
+                    </div>
+                    <p class="text-muted mb-3">Manage states, regions, and areas</p>
+                    <div class="d-grid gap-2">
+                        <a asp-action="CreateLGA" asp-controller="LGA" class="btn btn-success btn-sm">
+                            <i class="fas fa-plus me-2"></i>New Region
+                        </a>
+                        <a asp-action="Index" asp-controller="LGA" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-list me-1"></i>View All Regions
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cities Management -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card modern-card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                            <i class="fas fa-city fa-lg text-white"></i>
+                        </div>
+                        <h5 class="mb-0 fw-bold">Cities</h5>
+                    </div>
+                    <p class="text-muted mb-3">Manage cities and municipalities</p>
+                    <div class="d-grid gap-2">
+                        <a asp-action="CreateCity" asp-controller="City" class="btn btn-warning btn-sm">
+                            <i class="fas fa-plus me-2"></i>New City
+                        </a>
+                        <a asp-action="Index" asp-controller="City" class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-list me-1"></i>View All Cities
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Files Management -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card modern-card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                            <i class="fas fa-file-csv fa-lg text-white"></i>
+                        </div>
+                        <h5 class="mb-0 fw-bold">Data Files</h5>
+                    </div>
+                    <p class="text-muted mb-3">Upload and manage training data</p>
+                    <div class="d-grid gap-2">
+                        <a asp-action="Upload" asp-controller="CsvFile" class="btn btn-sm" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white;">
+                            <i class="fas fa-upload me-2"></i>Training File
+                        </a>
+                        <a asp-action="Upload" asp-controller="CsvFileCity" class="btn btn-sm" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white;">
+                            <i class="fas fa-upload me-2"></i>Prediction File
+                        </a>
+                        <a asp-action="Delete" asp-controller="CsvFile" class="btn btn-outline-danger btn-sm">
+                            <i class="fas fa-trash me-2"></i>Delete Files
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <div class="row g-4 mt-2">
+        <div class="col-md-4">
+            <div class="card modern-card border-0 shadow-sm">
+                <div class="card-body p-4 text-center">
+                    <i class="fas fa-bell fa-3x mb-3" style="color: #ef4444;"></i>
+                    <h6 class="text-muted mb-2">System Status</h6>
+                    <h4 class="fw-bold mb-0">Active & Monitoring</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card modern-card border-0 shadow-sm">
+                <div class="card-body p-4 text-center">
+                    <i class="fas fa-database fa-3x mb-3" style="color: #3b82f6;"></i>
+                    <h6 class="text-muted mb-2">Data Management</h6>
+                    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-sm btn-outline-primary">View Dashboard</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card modern-card border-0 shadow-sm">
+                <div class="card-body p-4 text-center">
+                    <i class="fas fa-chart-line fa-3x mb-3" style="color: #10b981;"></i>
+                    <h6 class="text-muted mb-2">Analytics</h6>
+                    <a asp-controller="Analytics" asp-action="Index" class="btn btn-sm btn-outline-success">View Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-card {
+    transition: all 0.3s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+</style>

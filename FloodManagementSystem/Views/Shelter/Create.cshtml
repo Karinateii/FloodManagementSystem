@@ -1,0 +1,308 @@
+@model GlobalDisasterManagement.Models.EmergencyShelter
+
+@{
+    ViewData["Title"] = "Create Emergency Shelter";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-home"></i> Create New Emergency Shelter</h3>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <i class="fas fa-check-circle"></i> @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Create" method="post" id="shelterForm">
+                        <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                        <!-- Basic Information -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5><i class="fas fa-info-circle"></i> Basic Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Shelter Name -->
+                                <div class="mb-3">
+                                    <label asp-for="Name" class="form-label">Shelter Name *</label>
+                                    <input asp-for="Name" class="form-control" placeholder="e.g., Central Community Center" required />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+
+                                <!-- Shelter Type -->
+                                <div class="mb-3">
+                                    <label asp-for="Type" class="form-label">Shelter Type *</label>
+                                    <select asp-for="Type" class="form-select" required>
+                                        <option value="">Select shelter type...</option>
+                                        @foreach (var item in ViewBag.ShelterTypes)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Type" class="text-danger"></span>
+                                </div>
+
+                                <!-- Address -->
+                                <div class="mb-3">
+                                    <label asp-for="Address" class="form-label">Address *</label>
+                                    <textarea asp-for="Address" class="form-control" rows="2" 
+                                              placeholder="Full address including street, area, and landmarks" required></textarea>
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Location Information -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5><i class="fas fa-map-marker-alt"></i> Location</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label asp-for="Latitude" class="form-label">Latitude *</label>
+                                        <input asp-for="Latitude" type="number" step="any" class="form-control" id="latitude" required />
+                                        <span asp-validation-for="Latitude" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="Longitude" class="form-label">Longitude *</label>
+                                        <input asp-for="Longitude" type="number" step="any" class="form-control" id="longitude" required />
+                                        <span asp-validation-for="Longitude" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-success mb-3" onclick="getLocation()">
+                                    <i class="fas fa-crosshairs"></i> Use Current Location
+                                </button>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="CityId" class="form-label">City</label>
+                                        <select asp-for="CityId" class="form-select" asp-items="ViewBag.Cities">
+                                            <option value="">Select a city...</option>
+                                        </select>
+                                        <span asp-validation-for="CityId" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="LGAId" class="form-label">LGA (Local Government Area)</label>
+                                        <select asp-for="LGAId" class="form-select" asp-items="ViewBag.LGAs">
+                                            <option value="">Select an LGA...</option>
+                                        </select>
+                                        <span asp-validation-for="LGAId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Capacity Information -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5><i class="fas fa-users"></i> Capacity Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="TotalCapacity" class="form-label">Total Capacity *</label>
+                                        <input asp-for="TotalCapacity" type="number" class="form-control" min="1" required />
+                                        <span asp-validation-for="TotalCapacity" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="CurrentOccupancy" class="form-label">Current Occupancy</label>
+                                        <input asp-for="CurrentOccupancy" type="number" class="form-control" min="0" value="0" />
+                                        <span asp-validation-for="CurrentOccupancy" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Facilities -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5><i class="fas fa-check-square"></i> Available Facilities</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="HasMedicalFacility" class="form-check-input" type="checkbox" />
+                                            <label asp-for="HasMedicalFacility" class="form-check-label">Medical Facility</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="HasFood" class="form-check-input" type="checkbox" />
+                                            <label asp-for="HasFood" class="form-check-label">Food Supply</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="HasWater" class="form-check-input" type="checkbox" />
+                                            <label asp-for="HasWater" class="form-check-label">Water Supply</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="HasPower" class="form-check-input" type="checkbox" />
+                                            <label asp-for="HasPower" class="form-check-label">Power/Electricity</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="HasSanitation" class="form-check-input" type="checkbox" />
+                                            <label asp-for="HasSanitation" class="form-check-label">Sanitation</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="HasSecurity" class="form-check-input" type="checkbox" />
+                                            <label asp-for="HasSecurity" class="form-check-label">Security</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="IsAccessible" class="form-check-input" type="checkbox" />
+                                            <label asp-for="IsAccessible" class="form-check-label">Wheelchair Accessible</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5><i class="fas fa-toggle-on"></i> Status</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="IsActive" class="form-check-input" type="checkbox" checked />
+                                            <label asp-for="IsActive" class="form-check-label">Active</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="IsOperational" class="form-check-input" type="checkbox" checked />
+                                            <label asp-for="IsOperational" class="form-check-label">Operational</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5><i class="fas fa-phone"></i> Contact Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="ContactPhone" class="form-label">Contact Phone *</label>
+                                        <input asp-for="ContactPhone" type="tel" class="form-control" placeholder="+234 XXX XXX XXXX" required />
+                                        <span asp-validation-for="ContactPhone" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="ContactEmail" class="form-label">Contact Email</label>
+                                        <input asp-for="ContactEmail" type="email" class="form-control" placeholder="shelter@example.com" />
+                                        <span asp-validation-for="ContactEmail" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="ManagerName" class="form-label">Manager Name</label>
+                                    <input asp-for="ManagerName" class="form-control" placeholder="Facility manager or coordinator name" />
+                                    <span asp-validation-for="ManagerName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5><i class="fas fa-sticky-note"></i> Additional Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label asp-for="SpecialNotes" class="form-label">Special Notes</label>
+                                    <textarea asp-for="SpecialNotes" class="form-control" rows="3" 
+                                              placeholder="Any special instructions, restrictions, or important information"></textarea>
+                                    <span asp-validation-for="SpecialNotes" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Amenities" class="form-label">Amenities (JSON format)</label>
+                                    <textarea asp-for="Amenities" class="form-control" rows="2" 
+                                              placeholder='["Blankets", "Cots", "Kitchen", "Showers"]'></textarea>
+                                    <small class="form-text text-muted">Enter as JSON array</small>
+                                    <span asp-validation-for="Amenities" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save"></i> Create Shelter
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            document.getElementById("latitude").value = position.coords.latitude;
+            document.getElementById("longitude").value = position.coords.longitude;
+            alert("Location captured successfully!");
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+    </script>
+}

@@ -1,0 +1,251 @@
+@model GlobalDisasterManagement.Models.DisasterIncident
+
+@{
+    ViewData["Title"] = "Report Incident";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Report Disaster Incident</h3>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <i class="fas fa-check-circle"></i> @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    
+                    <p class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Your report helps emergency services respond quickly. 
+                        Please provide accurate information and enable location services for faster assistance.
+                    </p>
+
+                    <form asp-action="Report" method="post" enctype="multipart/form-data" id="incidentForm">
+                        <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                        <!-- Disaster Type -->
+                        <div class="mb-3">
+                            <label asp-for="DisasterType" class="form-label">Disaster Type *</label>
+                            <select asp-for="DisasterType" class="form-select" required>
+                                <option value="">Select disaster type...</option>
+                                @foreach (var item in ViewBag.DisasterTypes)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="DisasterType" class="text-danger"></span>
+                        </div>
+
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label">Incident Title *</label>
+                            <input asp-for="Title" class="form-control" placeholder="Brief description (e.g., 'Flooding on Main Street')" required />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Detailed Description *</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" 
+                                      placeholder="Provide detailed information about the incident..." required></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <!-- Severity -->
+                        <div class="mb-3">
+                            <label asp-for="Severity" class="form-label">Severity Level *</label>
+                            <select asp-for="Severity" class="form-select" required>
+                                <option value="">Select severity...</option>
+                                @foreach (var item in ViewBag.Severities)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                            <small class="form-text text-muted">
+                                Low: Minor inconvenience | Moderate: Property damage | High: Significant damage/injuries | 
+                                Critical: Life-threatening | Catastrophic: Mass casualties
+                            </small>
+                            <span asp-validation-for="Severity" class="text-danger"></span>
+                        </div>
+
+                        <!-- Location Section -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5><i class="fas fa-map-marker-alt"></i> Location Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label asp-for="Latitude" class="form-label">Latitude</label>
+                                        <input asp-for="Latitude" type="number" step="any" class="form-control" id="latitude" />
+                                        <span asp-validation-for="Latitude" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label asp-for="Longitude" class="form-label">Longitude</label>
+                                        <input asp-for="Longitude" type="number" step="any" class="form-control" id="longitude" />
+                                        <span asp-validation-for="Longitude" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-success mb-3" onclick="getLocation()">
+                                    <i class="fas fa-crosshairs"></i> Use My Current Location
+                                </button>
+
+                                <div class="mb-3">
+                                    <label asp-for="Address" class="form-label">Address/Landmark *</label>
+                                    <textarea asp-for="Address" class="form-control" rows="2" 
+                                              placeholder="Street address, landmark, or area description" required></textarea>
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Impact Assessment -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5><i class="fas fa-exclamation-circle"></i> Impact Assessment</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="RoadBlocked" class="form-check-input" type="checkbox" />
+                                            <label asp-for="RoadBlocked" class="form-check-label">Road Blocked</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="PowerOutage" class="form-check-input" type="checkbox" />
+                                            <label asp-for="PowerOutage" class="form-check-label">Power Outage</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="StructuralDamage" class="form-check-input" type="checkbox" />
+                                            <label asp-for="StructuralDamage" class="form-check-label">Structural Damage</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="PeopleTrapped" class="form-check-input" type="checkbox" />
+                                            <label asp-for="PeopleTrapped" class="form-check-label">People Trapped</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="CasualtiesReported" class="form-check-input" type="checkbox" />
+                                            <label asp-for="CasualtiesReported" class="form-check-label">Casualties Reported</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="form-check">
+                                            <input asp-for="EnvironmentalHazard" class="form-check-input" type="checkbox" />
+                                            <label asp-for="EnvironmentalHazard" class="form-check-label">Environmental Hazard</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <label asp-for="AffectedPeople" class="form-label">Estimated Number of Affected People</label>
+                                    <input asp-for="AffectedPeople" type="number" class="form-control" min="0" placeholder="Approximate count" />
+                                    <span asp-validation-for="AffectedPeople" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Photo Upload -->
+                        <div class="mb-3">
+                            <label for="photos" class="form-label">Upload Photos (Optional)</label>
+                            <input type="file" class="form-control" id="photos" name="photos" multiple accept="image/*" />
+                            <small class="form-text text-muted">You can upload multiple photos (max 5 photos, 5MB each)</small>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="mb-3">
+                            <label asp-for="ReporterPhone" class="form-label">Contact Phone Number</label>
+                            <input asp-for="ReporterPhone" type="tel" class="form-control" placeholder="+234 XXX XXX XXXX" />
+                            <span asp-validation-for="ReporterPhone" class="text-danger"></span>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="fas fa-paper-plane"></i> Submit Report
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            document.getElementById("latitude").value = position.coords.latitude;
+            document.getElementById("longitude").value = position.coords.longitude;
+            alert("Location captured successfully!");
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation. Please enable location services.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        // Photo upload validation
+        document.getElementById('photos').addEventListener('change', function(e) {
+            const files = e.target.files;
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const maxFiles = 5;
+
+            if (files.length > maxFiles) {
+                alert(`You can only upload a maximum of ${maxFiles} photos.`);
+                e.target.value = '';
+                return;
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].size > maxSize) {
+                    alert(`File ${files[i].name} is too large. Maximum size is 5MB.`);
+                    e.target.value = '';
+                    return;
+                }
+            }
+        });
+    </script>
+}

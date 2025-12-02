@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Common UI Strings -->
+  <data name="AppName" xml:space="preserve">
+    <value>Sistema Mundial de Gestão de Desastres</value>
+  </data>
+  <data name="AppNameShort" xml:space="preserve">
+    <value>SMGD</value>
+  </data>
+  
+  <!-- Navigation -->
+  <data name="Home" xml:space="preserve">
+    <value>Início</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Painel de controle</value>
+  </data>
+  <data name="Incidents" xml:space="preserve">
+    <value>Incidentes</value>
+  </data>
+  <data name="Shelters" xml:space="preserve">
+    <value>Abrigos</value>
+  </data>
+  <data name="Alerts" xml:space="preserve">
+    <value>Alertas</value>
+  </data>
+  <data name="Predictions" xml:space="preserve">
+    <value>Previsões</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Relatórios</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Configurações</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Sair</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Entrar</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Cadastrar</value>
+  </data>
+  
+  <!-- Actions -->
+  <data name="Save" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Excluir</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Criar</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Pesquisar</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>Visualizar</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Baixar</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Carregar</value>
+  </data>
+  
+  <!-- Disaster Types -->
+  <data name="Flood" xml:space="preserve">
+    <value>Inundação</value>
+  </data>
+  <data name="Earthquake" xml:space="preserve">
+    <value>Terremoto</value>
+  </data>
+  <data name="Fire" xml:space="preserve">
+    <value>Incêndio</value>
+  </data>
+  <data name="Hurricane" xml:space="preserve">
+    <value>Furacão</value>
+  </data>
+  <data name="Tornado" xml:space="preserve">
+    <value>Tornado</value>
+  </data>
+  <data name="Tsunami" xml:space="preserve">
+    <value>Tsunami</value>
+  </data>
+  <data name="Landslide" xml:space="preserve">
+    <value>Deslizamento de terra</value>
+  </data>
+  <data name="Drought" xml:space="preserve">
+    <value>Seca</value>
+  </data>
+  <data name="Wildfire" xml:space="preserve">
+    <value>Incêndio florestal</value>
+  </data>
+  <data name="Volcano" xml:space="preserve">
+    <value>Vulcão</value>
+  </data>
+  
+  <!-- Severity Levels -->
+  <data name="Low" xml:space="preserve">
+    <value>Baixo</value>
+  </data>
+  <data name="Moderate" xml:space="preserve">
+    <value>Moderado</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>Alto</value>
+  </data>
+  <data name="Severe" xml:space="preserve">
+    <value>Severo</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>Crítico</value>
+  </data>
+  <data name="Extreme" xml:space="preserve">
+    <value>Extremo</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Aviso</value>
+  </data>
+  <data name="Emergency" xml:space="preserve">
+    <value>Emergência</value>
+  </data>
+  
+  <!-- Messages -->
+  <data name="Welcome" xml:space="preserve">
+    <value>Bem-vindo</value>
+  </data>
+  <data name="SuccessMessage" xml:space="preserve">
+    <value>Operação bem-sucedida</value>
+  </data>
+  <data name="ErrorMessage" xml:space="preserve">
+    <value>Ocorreu um erro. Por favor, tente novamente</value>
+  </data>
+  <data name="NoDataAvailable" xml:space="preserve">
+    <value>Nenhum dado disponível</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Carregando...</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Por favor, aguarde</value>
+  </data>
+  
+  <!-- Alerts & Notifications -->
+  <data name="DisasterAlert" xml:space="preserve">
+    <value>Alerta de desastre</value>
+  </data>
+  <data name="EvacuateNow" xml:space="preserve">
+    <value>Evacue agora</value>
+  </data>
+  <data name="TakeShelter" xml:space="preserve">
+    <value>Procure abrigo</value>
+  </data>
+  <data name="StaySafe" xml:space="preserve">
+    <value>Mantenha-se seguro</value>
+  </data>
+  <data name="EmergencyContact" xml:space="preserve">
+    <value>Contato de emergência</value>
+  </data>
+  <data name="NearestShelter" xml:space="preserve">
+    <value>Abrigo mais próximo</value>
+  </data>
+  
+  <!-- Forms -->
+  <data name="Email" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Senha</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nome de usuário</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefone</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Endereço</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Cidade</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Localização</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Hora</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  
+  <!-- Language Names -->
+  <data name="Language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="SelectLanguage" xml:space="preserve">
+    <value>Selecionar idioma</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="LanguageArabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LanguagePortuguese" xml:space="preserve">
+    <value>Português</value>
+  </data>
+  <data name="LanguageHausa" xml:space="preserve">
+    <value>Hausa</value>
+  </data>
+  <data name="LanguageYoruba" xml:space="preserve">
+    <value>Yorùbá</value>
+  </data>
+  <data name="LanguageIgbo" xml:space="preserve">
+    <value>Igbo</value>
+  </data>
+</root>

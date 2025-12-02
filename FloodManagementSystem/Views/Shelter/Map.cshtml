@@ -1,0 +1,247 @@
+@model IEnumerable<GlobalDisasterManagement.Models.EmergencyShelter>
+
+@{
+    ViewData["Title"] = "Shelters Map";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Map Column -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-home"></i> Emergency Shelters Map</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div id="map" style="height: 75vh; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Legend</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Marker Colors:</strong></p>
+                    <p><span style="display: inline-block; width: 20px; height: 20px; background: green; border-radius: 50%;"></span> Available (Good Capacity)</p>
+                    <p><span style="display: inline-block; width: 20px; height: 20px; background: orange; border-radius: 50%;"></span> Limited (70-90% Full)</p>
+                    <p><span style="display: inline-block; width: 20px; height: 20px; background: red; border-radius: 50%;"></span> At Capacity (90%+ Full)</p>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-filter"></i> Filters</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Shelter Type</strong></label>
+                        <div class="form-check">
+                            <input class="form-check-input type-filter" type="checkbox" value="School" id="typeSchool" checked>
+                            <label class="form-check-label" for="typeSchool">
+                                <i class="fas fa-school"></i> School
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input type-filter" type="checkbox" value="CommunityCenter" id="typeCommunity" checked>
+                            <label class="form-check-label" for="typeCommunity">
+                                <i class="fas fa-building"></i> Community Center
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input type-filter" type="checkbox" value="Stadium" id="typeStadium" checked>
+                            <label class="form-check-label" for="typeStadium">
+                                <i class="fas fa-futbol"></i> Stadium
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input type-filter" type="checkbox" value="Hospital" id="typeHospital" checked>
+                            <label class="form-check-label" for="typeHospital">
+                                <i class="fas fa-hospital"></i> Hospital
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input type-filter" type="checkbox" value="Other" id="typeOther" checked>
+                            <label class="form-check-label" for="typeOther">
+                                <i class="fas fa-home"></i> Other
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="showAvailableOnly">
+                            <label class="form-check-label" for="showAvailableOnly">
+                                Show only shelters with available space
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Total Shelters:</strong> @Model.Count()</p>
+                    <p><strong>Total Capacity:</strong> @Model.Sum(s => s.TotalCapacity)</p>
+                    <p><strong>Current Occupancy:</strong> @Model.Sum(s => s.CurrentOccupancy)</p>
+                    <p><strong>Available Spaces:</strong> @(Model.Sum(s => s.TotalCapacity) - Model.Sum(s => s.CurrentOccupancy))</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0"><i class="fas fa-link"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a asp-action="FindNearby" class="btn btn-success w-100 mb-2">
+                        <i class="fas fa-search-location"></i> Find Nearest Shelter
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary w-100 mb-2">
+                        <i class="fas fa-list"></i> List View
+                    </a>
+                    <a asp-controller="Incident" asp-action="Map" class="btn btn-danger w-100">
+                        <i class="fas fa-exclamation-triangle"></i> View Incidents Map
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <script>
+        var shelters = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            Model.Select(s => new {
+                id = s.Id,
+                name = s.Name,
+                type = s.Type.ToString(),
+                lat = s.Latitude,
+                lng = s.Longitude,
+                address = s.Address,
+                totalCapacity = s.TotalCapacity,
+                currentOccupancy = s.CurrentOccupancy,
+                availableSpaces = s.AvailableSpaces,
+                hasMedical = s.HasMedicalFacility,
+                hasFood = s.HasFood,
+                hasWater = s.HasWater,
+                contactPhone = s.ContactPhone
+            })
+        ));
+
+        // Initialize map
+        var map = L.map('map').setView([6.5244, 3.3792], 10); // Lagos default
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Get marker color based on occupancy
+        function getMarkerColor(shelter) {
+            var occupancyPercent = (shelter.currentOccupancy / shelter.totalCapacity) * 100;
+            if (occupancyPercent >= 90) return 'red';
+            if (occupancyPercent >= 70) return 'orange';
+            return 'green';
+        }
+
+        // Store all markers
+        var markers = [];
+
+        shelters.forEach(function(shelter) {
+            if (shelter.lat !== 0 && shelter.lng !== 0) {
+                var markerIcon = L.divIcon({
+                    className: 'custom-marker',
+                    html: `<div style="background-color: ${getMarkerColor(shelter)}; 
+                                      width: 30px; height: 30px; border-radius: 50%; 
+                                      border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);
+                                      display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-home" style="color: white; font-size: 14px;"></i>
+                           </div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+
+                var facilitiesHtml = '';
+                if (shelter.hasMedical) facilitiesHtml += '<i class="fas fa-medkit text-success"></i> Medical ';
+                if (shelter.hasFood) facilitiesHtml += '<i class="fas fa-utensils text-warning"></i> Food ';
+                if (shelter.hasWater) facilitiesHtml += '<i class="fas fa-tint text-info"></i> Water ';
+
+                var marker = L.marker([shelter.lat, shelter.lng], { icon: markerIcon })
+                    .bindPopup(`
+                        <div style="min-width: 250px;">
+                            <h6><strong>${shelter.name}</strong></h6>
+                            <p><strong>Type:</strong> ${shelter.type}</p>
+                            <p><strong>Capacity:</strong> ${shelter.currentOccupancy} / ${shelter.totalCapacity}</p>
+                            <p><strong>Available:</strong> <span class="badge bg-success">${shelter.availableSpaces} spaces</span></p>
+                            <p><strong>Facilities:</strong><br/>${facilitiesHtml || 'No special facilities'}</p>
+                            <p><strong>Location:</strong> ${shelter.address}</p>
+                            ${shelter.contactPhone ? '<p><strong>Phone:</strong> ' + shelter.contactPhone + '</p>' : ''}
+                            <div class="d-grid gap-2">
+                                <a href="/Shelter/Details/${shelter.id}" class="btn btn-primary btn-sm">View Details</a>
+                                ${shelter.availableSpaces > 0 ? 
+                                    '<a href="/Shelter/CheckIn?shelterId=' + shelter.id + '" class="btn btn-success btn-sm">Check In</a>' : 
+                                    '<button class="btn btn-secondary btn-sm" disabled>At Capacity</button>'}
+                            </div>
+                        </div>
+                    `);
+
+                marker.shelterData = shelter;
+                markers.push(marker);
+                marker.addTo(map);
+            }
+        });
+
+        // Filter functionality
+        function updateMarkers() {
+            var selectedTypes = [];
+            document.querySelectorAll('.type-filter:checked').forEach(function(checkbox) {
+                var value = checkbox.value;
+                selectedTypes.push(value);
+                // Also match similar types
+                if (value === 'Other') {
+                    selectedTypes.push('Church', 'Mosque', 'Government', 'Hotel', 'Military');
+                }
+            });
+
+            var showAvailableOnly = document.getElementById('showAvailableOnly').checked;
+
+            markers.forEach(function(marker) {
+                var shouldShow = selectedTypes.includes(marker.shelterData.type);
+                
+                if (showAvailableOnly) {
+                    shouldShow = shouldShow && marker.shelterData.availableSpaces > 0;
+                }
+
+                if (shouldShow) {
+                    if (!map.hasLayer(marker)) {
+                        marker.addTo(map);
+                    }
+                } else {
+                    if (map.hasLayer(marker)) {
+                        map.removeLayer(marker);
+                    }
+                }
+            });
+        }
+
+        // Attach event listeners
+        document.querySelectorAll('.type-filter').forEach(function(checkbox) {
+            checkbox.addEventListener('change', updateMarkers);
+        });
+        document.getElementById('showAvailableOnly').addEventListener('change', updateMarkers);
+
+        // Fit map to show all markers
+        if (markers.length > 0) {
+            var group = new L.featureGroup(markers);
+            map.fitBounds(group.getBounds().pad(0.1));
+        }
+    </script>
+}

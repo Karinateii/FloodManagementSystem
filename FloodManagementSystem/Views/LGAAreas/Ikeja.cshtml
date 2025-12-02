@@ -1,0 +1,307 @@
+<style>
+    .floodcard {
+        width: 5vmin;
+        height: 5vmin;
+        background-color: (0,24,34,0.9);
+        border-radius: 1vmin;
+        z-index: 99;
+        transform: translate(60%, -200%);
+    }
+
+    .big-card {
+        width: 10vmax;
+        border-radius: 1vmin;
+    }
+
+    .card {
+        background-color: rgba(255, 255, 255, );
+        position: absolute;
+        transition: transform 800ms cubic-bezier(.42,.16,0,1.02);
+        opacity: 0;
+    }
+
+
+
+    .floodcard:hover .big-card:nth-child(2) {
+        transform: translate(-200%, -90%);
+        border-radius: 10%;
+        opacity: 1;
+        width: 50px;
+        background-color: rgba(255, 0, 0, 0.493);
+    }
+
+    .floodcard:hover .big-card:nth-child(4) {
+        transform: translate(200%, 80%);
+        border-radius: 10%;
+        opacity: 1;
+        width: 50px;
+        background-color: rgba(255, 0, 0, 0.493);
+    }
+
+    .floodcard:hover .big-card:nth-child(1) {
+        transform: translate(220%, -100%);
+        border-radius: 10%;
+        opacity: 1;
+        width: 50px;
+        background-color: rgba(255, 0, 0, 0.493);
+    }
+
+    .floodcard:hover .big-card:nth-child(3) {
+        transform: translate(-220%, 80%);
+        border-radius: 10%;
+        opacity: 1;
+        width: 50px;
+        background-color: rgba(255, 0, 0, 0.493);
+    }
+
+    .zoom {
+        transition: transform .2s;
+        max-width: 100%;
+        height: auto;
+        z-index: 100;
+    }
+
+        .zoom:hover {
+            transform: scale(1.1);
+        }
+
+    .textc {
+        color: white;
+    }
+
+</style>
+
+
+<body id="top">
+    <i class="fa-solid fa-cloud-rain"></i>
+    <!-- ################################################################################################ -->
+    <!-- ################################################################################################ -->
+    <!-- ################################################################################################ -->
+    <div class="wrapper row3">
+        <main class="hoc container clear">
+
+
+            <!-- main body -->
+            <!-- ################################################################################################ -->
+
+
+
+
+            <div class="content">
+                <!-- in this area we will put in the floating info for each lga -->
+
+
+                <figure>
+
+                    <header class="heading">FLOOD RELIEF OF POPULAR AREAS AROUND SURULERE</header>
+                    <ul class="nospace clear">
+                        <li class="one_quarter first box">
+                            <div>
+                                <img class="zoom" style=" object-fit: cover;" src="../images/itire.png" alt="Flying Kites">
+                                <div class="text">
+                                    <h1>IKEJA <br> <i class="fa-solid fa-circle-exclamation"></i></h1>
+                                    <div class="floodcard">
+                                        <div class="big-card card textc"> <p>AVPr<br> 129mm</p> </div>
+                                        <div class="big-card card textc"> <p>AEV<br> 3m</p></div>
+                                        <div class="big-card card textc"> <p>FP<br> VHIGH</p></div>
+                                        <div class="big-card card textc"> <p>AREA<br>CANALS</p></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </li>
+                        <li class="one_quarter box">
+                            <div class="gallery ">
+                                <img class="zoom" src="../images/Screenshot 2023-03-12 123122.png" alt="Flying Kites">
+                                <div class="text">
+                                    <h1>OJODU</h1>
+                                    <div class="floodcard">
+                                        <div class="big-card card textc"> <p>AVPr<br> 129mm</p> </div>
+                                        <div class="big-card card textc"> <p>AEV<br> 6m</p></div>
+                                        <div class="big-card card textc"> <p>FP<br> MID</p></div>
+                                        <div class="big-card card textc"> <p>AREA<br>LAND</p></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </li>
+                        <li class="one_quarter box">
+                            <div class="gallery">
+
+                                <img class="zoom" src="../images/Screenshot 2023-03-12 123122.png" alt="Flying Kites">
+                                <div class="text">
+                                    <h1>IFAKO/IJAIYE</h1>
+
+                                    <div class="floodcard">
+                                        <div class="big-card card textc"> <p>AVPr<br> 129mm</p> </div>
+                                        <div class="big-card card textc"> <p>AEV<br> 6m</p></div>
+                                        <div class="big-card card textc"> <p>FP<br> MID</p></div>
+                                        <div class="big-card card textc"> <p>AREA<br>LAND</p></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </li>
+                        <li class="one_quarter box">
+                            <div class="gallery">
+                                <img class="zoom" src="../images/Screenshot 2023-03-12 123122.png" alt="Flying Kites">
+                                <div class="text">
+                                    <h1>IJU</h1>
+
+                                    <div class="floodcard">
+                                        <div class="big-card card textc"> <p>AVPr<br> 129mm</p> </div>
+                                        <div class="big-card card textc"> <p>AEV<br> 4m</p></div>
+                                        <div class="big-card card textc"> <p>FP<br> HIGH</p></div>
+                                        <div class="big-card card textc"> <p>AREA<br>LAND</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="one_quarter first box">
+                            <div>
+                                <img class="zoom" style=" object-fit: cover;" src="../images/Screenshot 2023-03-12 123122.png" alt="Flying Kites">
+                                <div class="text">
+                                    <h1>ALIMOSHO</h1>
+                                    <div class="floodcard">
+                                        <div class="big-card card textc"> <p>AVPr<br> 129mm</p> </div>
+                                        <div class="big-card card textc"> <p>AEV<br> 6m</p></div>
+                                        <div class="big-card card textc"> <p>FP<br> MID</p></div>
+                                        <div class="big-card card textc"> <p>AREA<br>LAND</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="one_quarter box">
+                            <div class="gallery">
+                                <img class="zoom" src="../images/Screenshot 2023-03-12 134245.png" alt="Flying Kites">
+                                <div class="text">
+                                    <h1>AKESAN</h1>
+                                    <div class="floodcard">
+                                        <div class="big-card card textc"> <p>AVPr<br> 129mm</p> </div>
+                                        <div class="big-card card textc"> <p>AEV<br> 5m</p></div>
+                                        <div class="big-card card textc"> <p>FP<br> MID</p></div>
+                                        <div class="big-card card textc"> <p>AREA<br>LAND</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="one_quarter box">
+                            <div class="gallery">
+                                <img class="zoom" src="../images/Screenshot 2023-03-12 123122.png" alt="Flying Kites">
+                                <div class="text">
+                                    <h1>ISHEFUN</h1>
+                                    <div class="floodcard">
+                                        <div class="big-card card textc"> <p>AVPr<br> 129mm</p> </div>
+                                        <div class="big-card card textc"> <p>AEV<br> 4m</p></div>
+                                        <div class="big-card card textc"> <p>FP<br> MID</p></div>
+                                        <div class="big-card card textc"> <p>AREA<br>CANAL</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="one_quarter box">
+                            <div class="gallery">
+                                <img class="zoom" src="../images/Screenshot 2023-03-12 123122.png" alt="Flying Kites">
+                                <div class="text">
+                                    <h1>SHOMOLU</h1>
+                                    <div class="floodcard">
+                                        <div class="big-card card textc"> <p>AVPr<br> 129mm</p> </div>
+                                        <div class="big-card card textc"> <p>AEV<br> 4m</p></div>
+                                        <div class="big-card card textc"> <p>FP<br> HIGH</p></div>
+                                        <div class="big-card card textc"> <p>AREA<br>CANAL</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="one_quarter first box">
+                            <div>
+                                <img class="zoom" style=" object-fit: cover;" src="../images/Screenshot 2023-03-12 123122.png" alt="Flying Kites">
+                                <div class="text">
+                                    <h1>BARIGA<br> <i class="fa-solid fa-circle-exclamation"></i></h1>
+                                    <div class="floodcard">
+                                        <div class="big-card card textc"> <p>AVPr<br> 129mm</p> </div>
+                                        <div class="big-card card textc"> <p>AEV<br> 3m</p></div>
+                                        <div class="big-card card textc"> <p>FP<br> VHIGH</p></div>
+                                        <div class="big-card card textc"> <p>AREA<br>WATER WAY</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="one_quarter box">
+                            <div class="gallery">
+                                <img class="zoom" src="../images/Screenshot 2023-03-12 123122.png" alt="Flying Kites">
+                                <div class="text">
+                                    <h1>OWORONSHOKI</h1>
+                                    <div class="floodcard">
+                                        <div class="big-card card textc"> <p>AVPr<br> 129mm</p> </div>
+                                        <div class="big-card card textc"> <p>AEV<br> 4m</p></div>
+                                        <div class="big-card card textc"> <p>FP<br> VHIGH</p></div>
+                                        <div class="big-card card textc"> <p>AREA<br> WATER WAY</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="one_quarter box">
+                            <img class="zoom" src="../images/Screenshot 2023-03-12 123122.png" alt="Flying Kites">
+                            <div class="gallery">
+                                <div class="text">
+                                    <h1>IFAKO<br> <i class="fa-solid fa-circle-exclamation"></i></h1> 
+                                    <div class="floodcard">
+                                        <div class="big-card card textc"> <p>AVPr<br> 129mm</p> </div>
+                                        <div class="big-card card textc"> <p>AEV<br> 3m</p></div>
+                                        <div class="big-card card textc"> <p>FP<br> HIGH</p></div>
+                                        <div class="big-card card textc"> <p>AREA<br> COAST</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="one_quarter box">
+                            <div class="gallery">
+                                <img class="zoom" src="../images/Screenshot 2023-03-12 123122.png" alt="Flying Kites">
+                                <div class="text">
+                                    <h1>OSHODI <br> <i class="fa-solid fa-circle-exclamation"></i></h1>
+                                    <div class="floodcard">
+                                        <div class="big-card card textc"> <p>AVPr<br> 129mm</p> </div>
+                                        <div class="big-card card textc"> <p>AEV<br> 2m</p></div>
+                                        <div class="big-card card textc"> <p>FP<br> VHIGH</p></div>
+                                        <div class="big-card card textc"> <p>AREA<br> COAST</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+                    <figcaption>This is a short description of the topography and flood susceptibility of the followning areas <br> </figcaption>
+                    <hi>KEY: <br> AVPr: Average precipitation <br> AEV: Average Elevation <br> FP: Flood probability <br> AREA: Land Type</hi>
+
+                </figure>
+                <nav class="pagination">
+                    <ul>
+                        <li><a href="pages\GALLERY IKEJA AREAS.html">&laquo; Previous</a></li>
+                        <li><a href="pages\GALERY SURULERE AREAS.html">1</a></li>
+                        <li><a href="pages\GALLERY AMUWO AREAS - CoNTD.html">2</a></li>
+
+                        <li><a href="pages\GALLERY  IKORODU AREAS .html">3</a></li>
+                        <li><a href="pages\GALLERY  LAGOS ISLAND AREAS .html">4</a></li>
+                        <li><a href="pages\GALLERY AMUWO AREAS - CoNTD.html">5</a></li>
+
+
+                        <li><a href="pages\GALLERY AMUWO AREAS.html">6</a></li>
+                        <li><a href="pages\GALLERY BADAGRY AREAS - copy.html">7</a></li>
+
+                        <li><a  href="pages\GALLERY IKEJA AREAS.html">8</a></li>
+                        <li class="current"><strong>8</strong></li>
+                        <li><a href="#">9</a></li>
+                        <li><a href="#">Next &raquo;</a></li>
+
+                    </ul>
+                </nav>
+            </div>
+        </main>     
+    </div>
+            <!-- ################################################################################################ -->
+            <!-- / main body -->
+            <div class="clear"></div>
+ </body>

@@ -1,0 +1,136 @@
+@using Microsoft.Extensions.Localization
+@using GlobalDisasterManagement.Resources
+@inject IStringLocalizer<SharedResources> Localizer
+
+@{
+    ViewBag.Title = Localizer["ContactUs"];
+}
+
+<!-- Page Header -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--info-color) 0%, #0891b2 100%); color: white;">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-transparent mb-3">
+                <li class="breadcrumb-item"><a href="/" class="text-white opacity-75">@Localizer["Home"]</a></li>
+                <li class="breadcrumb-item active text-white">@Localizer["ContactUs"]</li>
+            </ol>
+        </nav>
+        <h1 class="display-4 fw-bold mb-3">
+            <i class="fas fa-envelope me-3"></i>@Localizer["ContactUs"]
+        </h1>
+        <p class="lead mb-0">@Localizer["ContactInfo"]</p>
+    </div>
+</section>
+
+<!-- Contact Information and Form -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Contact Cards -->
+            <div class="col-lg-4">
+                <div class="row g-4">
+                    <!-- Email Card -->
+                    <div class="col-12">
+                        <div class="card modern-card h-100">
+                            <div class="card-body text-center p-4">
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 60px; height: 60px; background-color: rgba(13, 202, 240, 0.1);">
+                                    <i class="fas fa-envelope fa-2x text-info"></i>
+                                </div>
+                                <h5 class="card-title fw-bold mb-3">@Localizer["Email"]</h5>
+                                <p class="card-text text-muted mb-0">
+                                    <a href="mailto:info@example.com" class="text-decoration-none">info@example.com</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phone Card -->
+                    <div class="col-12">
+                        <div class="card modern-card h-100">
+                            <div class="card-body text-center p-4">
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 60px; height: 60px; background-color: rgba(16, 185, 129, 0.1);">
+                                    <i class="fas fa-phone fa-2x text-success"></i>
+                                </div>
+                                <h5 class="card-title fw-bold mb-3">@Localizer["Phone"]</h5>
+                                <p class="card-text text-muted mb-2">
+                                    <strong>Emergency Hotline</strong>
+                                </p>
+                                <p class="mb-0">
+                                    <a href="tel:0806-090-7333" class="text-decoration-none fs-5">0806 090 7333</a>
+                                </p>
+                                <small class="text-muted">Available 24/7</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Card -->
+                    <div class="col-12">
+                        <div class="card modern-card h-100">
+                            <div class="card-body text-center p-4">
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 60px; height: 60px; background-color: rgba(37, 99, 235, 0.1);">
+                                    <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold mb-3">@Localizer["Address"]</h5>
+                                <p class="card-text text-muted mb-0">
+                                    National Emergency Response Center<br/>
+                                    Emergency Management District<br/>
+                                    Federal Capital Territory
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="col-lg-8">
+                <div class="card modern-card">
+                    <div class="card-body p-4">
+                        <h3 class="card-title fw-bold mb-4">Send Us a Message</h3>
+                        <form asp-controller="ContactForms" asp-action="Submit" method="post">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="fullName" class="form-label fw-semibold">Full Name</label>
+                                    <input type="text" class="form-control" id="fullName" name="fullName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label fw-semibold">Email Address</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="subject" class="form-label fw-semibold">Subject</label>
+                                    <input type="text" class="form-control" id="subject" name="subject" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="message" class="form-label fw-semibold">Message</label>
+                                    <textarea class="form-control" id="message" name="message" rows="6" required></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                                        <i class="fas fa-paper-plane me-2"></i>Send Message
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Info Banner -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                    <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                    <div>
+                        <h5 class="alert-heading mb-2">Emergency Contact</h5>
+                        <p class="mb-0">For immediate emergency assistance, please call our 24/7 hotline: <strong>0806 090 7333</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

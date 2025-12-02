@@ -1,0 +1,188 @@
+@{
+    ViewData["Title"] = "Find Nearby Shelters";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-search-location"></i> Find Nearby Shelters</h2>
+        <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to List</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Search for Shelters Near You</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Find the closest emergency shelters to your current location or a specific address.</p>
+
+                    <form asp-action="FindNearby" method="post">
+                        <div class="mb-4">
+                            <label class="form-label"><strong>Location Input Method:</strong></label>
+                            <div class="btn-group w-100 mb-3" role="group">
+                                <input type="radio" class="btn-check" name="locationMethod" id="useGPS" checked>
+                                <label class="btn btn-outline-success" for="useGPS">
+                                    <i class="fas fa-crosshairs"></i> Use My GPS Location
+                                </label>
+                                
+                                <input type="radio" class="btn-check" name="locationMethod" id="useManual">
+                                <label class="btn btn-outline-primary" for="useManual">
+                                    <i class="fas fa-map-marker-alt"></i> Enter Coordinates Manually
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- GPS Location Section -->
+                        <div id="gpsSection">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> Click the button below to automatically detect your location using GPS.
+                            </div>
+                            <button type="button" class="btn btn-success btn-lg w-100 mb-3" onclick="getLocation()">
+                                <i class="fas fa-crosshairs"></i> Detect My Location
+                            </button>
+                            <div id="locationStatus" class="alert alert-secondary" style="display: none;">
+                                <i class="fas fa-spinner fa-spin"></i> Detecting your location...
+                            </div>
+                        </div>
+
+                        <!-- Manual Input Section -->
+                        <div id="manualSection" style="display: none;">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i> Enter your latitude and longitude coordinates manually.
+                            </div>
+                        </div>
+
+                        <!-- Coordinates (hidden but will be populated) -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="latitude" class="form-label">Latitude</label>
+                                <input type="number" step="any" class="form-control" id="latitude" name="latitude" required readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="longitude" class="form-label">Longitude</label>
+                                <input type="number" step="any" class="form-control" id="longitude" name="longitude" required readonly />
+                            </div>
+                        </div>
+
+                        <!-- Search Radius -->
+                        <div class="mb-3">
+                            <label for="radius" class="form-label">Search Radius (kilometers)</label>
+                            <input type="range" class="form-range" id="radius" name="radius" min="1" max="50" value="10" oninput="updateRadiusLabel(this.value)">
+                            <div class="d-flex justify-content-between">
+                                <small>1 km</small>
+                                <strong id="radiusLabel">10 km</strong>
+                                <small>50 km</small>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg" id="searchBtn" disabled>
+                                <i class="fas fa-search"></i> Search for Shelters
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Section -->
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fas fa-question-circle"></i> How It Works</h5>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li><strong>Allow Location Access:</strong> When prompted, allow your browser to access your location</li>
+                        <li><strong>Adjust Search Radius:</strong> Use the slider to set how far you want to search (1-50 km)</li>
+                        <li><strong>Search:</strong> Click the search button to find nearby shelters</li>
+                        <li><strong>View Results:</strong> See a list of shelters sorted by distance from your location</li>
+                        <li><strong>Check In:</strong> Select a shelter and complete the check-in process</li>
+                    </ol>
+                    
+                    <div class="alert alert-warning mt-3">
+                        <strong>Note:</strong> If GPS is not available or you're using a desktop computer, you can manually enter coordinates.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let locationDetected = false;
+
+        // Toggle between GPS and Manual input
+        document.getElementById('useGPS').addEventListener('change', function() {
+            document.getElementById('gpsSection').style.display = 'block';
+            document.getElementById('manualSection').style.display = 'none';
+            document.getElementById('latitude').readOnly = true;
+            document.getElementById('longitude').readOnly = true;
+            if (!locationDetected) {
+                document.getElementById('latitude').value = '';
+                document.getElementById('longitude').value = '';
+                document.getElementById('searchBtn').disabled = true;
+            }
+        });
+
+        document.getElementById('useManual').addEventListener('change', function() {
+            document.getElementById('gpsSection').style.display = 'none';
+            document.getElementById('manualSection').style.display = 'block';
+            document.getElementById('latitude').readOnly = false;
+            document.getElementById('longitude').readOnly = false;
+            document.getElementById('latitude').value = '';
+            document.getElementById('longitude').value = '';
+            document.getElementById('searchBtn').disabled = false;
+            locationDetected = false;
+        });
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                document.getElementById('locationStatus').style.display = 'block';
+                document.getElementById('locationStatus').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting your location...';
+                
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser. Please enter coordinates manually.");
+            }
+        }
+
+        function showPosition(position) {
+            document.getElementById('latitude').value = position.coords.latitude;
+            document.getElementById('longitude').value = position.coords.longitude;
+            document.getElementById('searchBtn').disabled = false;
+            locationDetected = true;
+            
+            document.getElementById('locationStatus').className = 'alert alert-success';
+            document.getElementById('locationStatus').innerHTML = '<i class="fas fa-check-circle"></i> Location detected successfully! Latitude: ' + 
+                position.coords.latitude.toFixed(6) + ', Longitude: ' + position.coords.longitude.toFixed(6);
+        }
+
+        function showError(error) {
+            let errorMsg = '';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMsg = "Location access denied. Please enable location services or enter coordinates manually.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMsg = "Location information is unavailable. Please try again or enter coordinates manually.";
+                    break;
+                case error.TIMEOUT:
+                    errorMsg = "Location request timed out. Please try again or enter coordinates manually.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    errorMsg = "An unknown error occurred. Please try again or enter coordinates manually.";
+                    break;
+            }
+            
+            document.getElementById('locationStatus').className = 'alert alert-danger';
+            document.getElementById('locationStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + errorMsg;
+            document.getElementById('locationStatus').style.display = 'block';
+        }
+
+        function updateRadiusLabel(value) {
+            document.getElementById('radiusLabel').textContent = value + ' km';
+        }
+    </script>
+}

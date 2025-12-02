@@ -1,0 +1,399 @@
+/* Emergency Response Styling */
+
+/* Disaster Type Badges */
+.badge-disaster-flood { background-color: #0077be; color: white; }
+.badge-disaster-earthquake { background-color: #8b4513; color: white; }
+.badge-disaster-fire { background-color: #ff4500; color: white; }
+.badge-disaster-hurricane { background-color: #4b0082; color: white; }
+.badge-disaster-tornado { background-color: #708090; color: white; }
+.badge-disaster-tsunami { background-color: #1e90ff; color: white; }
+.badge-disaster-landslide { background-color: #a0522d; color: white; }
+.badge-disaster-drought { background-color: #daa520; color: white; }
+.badge-disaster-wildfire { background-color: #ff6347; color: white; }
+.badge-disaster-volcaniceruption { background-color: #dc143c; color: white; }
+.badge-disaster-storm { background-color: #4682b4; color: white; }
+.badge-disaster-cyclone { background-color: #483d8b; color: white; }
+.badge-disaster-avalanche { background-color: #b0e0e6; color: #333; }
+.badge-disaster-heatwave { background-color: #ff8c00; color: white; }
+.badge-disaster-coldwave { background-color: #87ceeb; color: #333; }
+.badge-disaster-epidemic { background-color: #9932cc; color: white; }
+.badge-disaster-industrial { background-color: #696969; color: white; }
+.badge-disaster-chemical { background-color: #ffd700; color: #333; }
+.badge-disaster-nuclear { background-color: #ff0000; color: white; }
+.badge-disaster-terrorism { background-color: #8b0000; color: white; }
+.badge-disaster-civilunrest { background-color: #ff6347; color: white; }
+.badge-disaster-buildingcollapse { background-color: #556b2f; color: white; }
+.badge-disaster-explosion { background-color: #ff4500; color: white; }
+.badge-disaster-gasleak { background-color: #ffff00; color: #333; }
+.badge-disaster-oilspill { background-color: #000000; color: white; }
+.badge-disaster-other { background-color: #808080; color: white; }
+
+/* Severity Indicators */
+.severity-low {
+    color: #28a745;
+    font-weight: bold;
+}
+.severity-moderate {
+    color: #ffc107;
+    font-weight: bold;
+}
+.severity-high {
+    color: #fd7e14;
+    font-weight: bold;
+}
+.severity-critical {
+    color: #dc3545;
+    font-weight: bold;
+}
+.severity-catastrophic {
+    color: #8b0000;
+    font-weight: bold;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Status Pills */
+.status-reported { background-color: #6c757d; color: white; }
+.status-verified { background-color: #17a2b8; color: white; }
+.status-acknowledged { background-color: #007bff; color: white; }
+.status-responding { background-color: #ffc107; color: #333; }
+.status-onsite { background-color: #fd7e14; color: white; }
+.status-inprogress { background-color: #28a745; color: white; }
+.status-resolved { background-color: #20c997; color: white; }
+.status-closed { background-color: #6c757d; color: white; }
+.status-false { background-color: #dc3545; color: white; }
+
+/* Shelter Type Badges */
+.shelter-school { background-color: #007bff; color: white; }
+.shelter-communitycenter { background-color: #28a745; color: white; }
+.shelter-stadium { background-color: #17a2b8; color: white; }
+.shelter-hospital { background-color: #dc3545; color: white; }
+.shelter-church { background-color: #6f42c1; color: white; }
+.shelter-mosque { background-color: #20c997; color: white; }
+.shelter-government { background-color: #343a40; color: white; }
+.shelter-hotel { background-color: #fd7e14; color: white; }
+.shelter-military { background-color: #6c757d; color: white; }
+.shelter-other { background-color: #6c757d; color: white; }
+
+/* Capacity Indicators */
+.capacity-good {
+    background-color: #28a745;
+    color: white;
+}
+.capacity-limited {
+    background-color: #ffc107;
+    color: #333;
+}
+.capacity-full {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Progress Bar Colors */
+.progress-bar-capacity-good {
+    background-color: #28a745;
+}
+.progress-bar-capacity-limited {
+    background-color: #ffc107;
+}
+.progress-bar-capacity-full {
+    background-color: #dc3545;
+}
+
+/* Facility Icons */
+.facility-icon {
+    display: inline-block;
+    margin: 0 5px;
+    font-size: 1.2rem;
+}
+.facility-medical { color: #dc3545; }
+.facility-food { color: #ffc107; }
+.facility-water { color: #17a2b8; }
+.facility-power { color: #fd7e14; }
+.facility-sanitation { color: #6c757d; }
+.facility-security { color: #343a40; }
+.facility-accessible { color: #007bff; }
+
+/* Impact Assessment */
+.impact-indicator {
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 5px;
+    display: inline-block;
+}
+.impact-roadblocked { background-color: #ffc107; color: #333; }
+.impact-poweroutage { background-color: #fd7e14; color: white; }
+.impact-structuraldamage { background-color: #dc3545; color: white; }
+.impact-peopletrapped { background-color: #8b0000; color: white; }
+.impact-casualties { background-color: #8b0000; color: white; }
+
+/* Alert Cards */
+.alert-card {
+    border-left: 5px solid;
+    margin-bottom: 15px;
+    transition: box-shadow 0.3s ease;
+}
+.alert-card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.alert-card-low { border-left-color: #28a745; }
+.alert-card-moderate { border-left-color: #ffc107; }
+.alert-card-high { border-left-color: #fd7e14; }
+.alert-card-critical { border-left-color: #dc3545; }
+.alert-card-catastrophic { border-left-color: #8b0000; }
+
+/* Map Markers Custom Styles */
+.custom-marker {
+    background: transparent;
+    border: none;
+}
+
+/* Photo Gallery */
+.photo-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin: 15px 0;
+}
+.photo-gallery img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.photo-gallery img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* Lightbox */
+.lightbox {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+    justify-content: center;
+    align-items: center;
+}
+.lightbox.active {
+    display: flex;
+}
+.lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+    box-shadow: 0 0 50px rgba(255,255,255,0.3);
+}
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* GPS Indicator */
+.gps-accuracy-good { color: #28a745; }
+.gps-accuracy-fair { color: #ffc107; }
+.gps-accuracy-poor { color: #dc3545; }
+
+/* File Upload Area */
+.file-upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.file-upload-area:hover {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+}
+.file-upload-area.drag-over {
+    border-color: #28a745;
+    background-color: #d4edda;
+}
+
+/* Statistics Panel */
+.stats-card {
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    color: white;
+    text-align: center;
+}
+.stats-card h3 {
+    font-size: 2.5rem;
+    margin: 0;
+}
+.stats-card p {
+    margin: 5px 0 0 0;
+    font-size: 0.9rem;
+}
+.stats-total { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.stats-active { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.stats-resolved { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.stats-capacity { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 50px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dee2e6;
+}
+.timeline-item {
+    position: relative;
+    padding: 10px 0 10px 80px;
+    margin-bottom: 20px;
+}
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 44px;
+    top: 15px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #007bff;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px #007bff;
+}
+.timeline-item-time {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .photo-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+    .photo-gallery img {
+        height: 100px;
+    }
+    .stats-card h3 {
+        font-size: 2rem;
+    }
+    .timeline::before {
+        left: 20px;
+    }
+    .timeline-item {
+        padding-left: 50px;
+    }
+    .timeline-item::before {
+        left: 14px;
+    }
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Toast Notifications */
+.toast-notification {
+    min-width: 300px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.toast-notification .toast-header {
+    background-color: #007bff;
+    color: white;
+}
+.toast-notification.toast-success .toast-header {
+    background-color: #28a745;
+}
+.toast-notification.toast-warning .toast-header {
+    background-color: #ffc107;
+    color: #333;
+}
+.toast-notification.toast-danger .toast-header {
+    background-color: #dc3545;
+}
+
+/* Card Hover Effects */
+.card-hover {
+    transition: all 0.3s ease;
+}
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Search and Filter Panel */
+.filter-panel {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.filter-panel .form-label {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* Button Enhancements */
+.btn-emergency {
+    background: linear-gradient(135deg, #dc3545 0%, #8b0000 100%);
+    border: none;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.btn-emergency:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+}
+
+/* Quick Action Buttons */
+.quick-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+.quick-action-btn:hover {
+    transform: translateX(5px);
+    color: white;
+}
+.quick-action-btn i {
+    margin-right: 10px;
+    font-size: 1.5rem;
+}

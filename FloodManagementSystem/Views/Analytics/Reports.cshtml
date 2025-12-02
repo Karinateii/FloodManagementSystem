@@ -1,0 +1,198 @@
+@{
+    ViewData["Title"] = "Generate Reports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3">
+                <i class="fas fa-file-pdf me-2"></i>Generate Reports
+            </h1>
+            <p class="text-muted">Create comprehensive analytical reports in multiple formats</p>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-cog me-2"></i>Report Configuration</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="GenerateReport" method="post">
+                        @Html.AntiForgeryToken()
+                        
+                        <!-- Report Type -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Report Type</label>
+                            <select name="ReportType" class="form-select" required>
+                                <option value="">-- Select Report Type --</option>
+                                <option value="0">Disaster Impact Analysis</option>
+                                <option value="1">Response Effectiveness</option>
+                                <option value="2">Shelter Utilization</option>
+                                <option value="3">IoT Sensor Performance</option>
+                                <option value="4">Notification Delivery</option>
+                                <option value="5">Prediction Accuracy</option>
+                                <option value="6">Comprehensive Report (All Metrics)</option>
+                            </select>
+                        </div>
+
+                        <!-- Date Range -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Start Date</label>
+                                <input type="date" name="StartDate" class="form-control" required 
+                                       value="@DateTime.UtcNow.AddMonths(-1).ToString("yyyy-MM-dd")">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">End Date</label>
+                                <input type="date" name="EndDate" class="form-control" required 
+                                       value="@DateTime.UtcNow.ToString("yyyy-MM-dd")">
+                            </div>
+                        </div>
+
+                        <!-- Format -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Export Format</label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Format" value="0" id="formatPdf" checked>
+                                        <label class="form-check-label" for="formatPdf">
+                                            <i class="fas fa-file-pdf text-danger me-1"></i>PDF
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Format" value="1" id="formatExcel">
+                                        <label class="form-check-label" for="formatExcel">
+                                            <i class="fas fa-file-excel text-success me-1"></i>Excel
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Format" value="2" id="formatCsv">
+                                        <label class="form-check-label" for="formatCsv">
+                                            <i class="fas fa-file-csv text-info me-1"></i>CSV
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Format" value="3" id="formatJson">
+                                        <label class="form-check-label" for="formatJson">
+                                            <i class="fas fa-file-code text-warning me-1"></i>JSON
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filters -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Filters (Optional)</label>
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <input type="text" name="Severity" class="form-control" placeholder="Severity (e.g., High, Medium, Low)">
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <input type="text" name="CustomTitle" class="form-control" placeholder="Custom Report Title">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Options -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Report Options</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="IncludeCharts" id="includeCharts" checked>
+                                <label class="form-check-label" for="includeCharts">
+                                    Include Charts and Visualizations
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="IncludeRawData" id="includeRawData">
+                                <label class="form-check-label" for="includeRawData">
+                                    Include Raw Data Tables
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-file-download me-2"></i>Generate Report
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Export -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0"><i class="fas fa-download me-2"></i>Quick Export</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small">Export data directly without report generation</p>
+                    <div class="d-grid gap-2">
+                        <a href="@Url.Action("ExportCsv", new { dataType = "incidents" })" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-fire me-2"></i>Incidents (CSV)
+                        </a>
+                        <a href="@Url.Action("ExportExcel", new { dataType = "alerts" })" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-bell me-2"></i>Alerts (Excel)
+                        </a>
+                        <a href="@Url.Action("ExportCsv", new { dataType = "shelters" })" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-home me-2"></i>Shelters (CSV)
+                        </a>
+                        <a href="@Url.Action("ExportExcel", new { dataType = "sensors" })" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-broadcast-tower me-2"></i>IoT Sensors (Excel)
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Report Info</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Available Report Types:</h6>
+                    <ul class="small">
+                        <li><strong>Disaster Impact:</strong> Geographic spread, affected populations, severity analysis</li>
+                        <li><strong>Response Effectiveness:</strong> Response times, resolution rates, performance metrics</li>
+                        <li><strong>Shelter Utilization:</strong> Occupancy rates, capacity analysis, facility usage</li>
+                        <li><strong>IoT Performance:</strong> Sensor health, data quality, maintenance needs</li>
+                        <li><strong>Notifications:</strong> Delivery rates, channel performance, reach statistics</li>
+                        <li><strong>ML Predictions:</strong> Model accuracy, prediction quality, location analysis</li>
+                        <li><strong>Comprehensive:</strong> All metrics combined in one report</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

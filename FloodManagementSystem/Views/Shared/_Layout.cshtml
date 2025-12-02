@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Global Disaster Management System</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="~/css/emergency-response.css" asp-append-version="true" />
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #06b6d4;
+            --dark-color: #1f2937;
+            --light-bg: #f9fafb;
+            --border-color: #e5e7eb;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #374151;
+            background-color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        /* Modern Navbar */
+        .modern-navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+        
+        .modern-navbar .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .modern-navbar .navbar-brand i {
+            font-size: 1.8rem;
+        }
+        
+        .modern-navbar .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .modern-navbar .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white !important;
+        }
+        
+        .modern-navbar .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+        }
+        
+        .modern-navbar .dropdown-item {
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s;
+        }
+        
+        .modern-navbar .dropdown-item:hover {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+        }
+        
+        /* Content Area */
+        main {
+            min-height: calc(100vh - 200px);
+        }
+        
+        /* Modern Footer */
+        .modern-footer {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+        
+        .modern-footer h6 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .modern-footer a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .modern-footer a:hover {
+            color: white;
+        }
+        
+        .modern-footer .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Alert Badge */
+        .alert-badge {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .alert-badge .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.7rem;
+        }
+        
+        /* Cards */
+        .modern-card {
+            border: none;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border-radius: 0.75rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .modern-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Buttons */
+        .btn-modern {
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body data-user-city-id="@ViewBag.UserCityId" data-user-lga-id="@ViewBag.UserLgaId">
+    <!-- Modern Navigation -->
+    <nav class="navbar navbar-expand-lg modern-navbar sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <div>GDMS</div>
+                    <small style="font-size: 0.6rem; opacity: 0.9;">Global Disaster Management</small>
+                </div>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border-color: rgba(255,255,255,0.3);">
+                <span class="navbar-toggler-icon" style="filter: brightness(0) invert(1);"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-home me-1"></i> @Localizer["Home"]
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="fas fa-lightbulb me-1"></i> @Localizer["Tips"]
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="Tips" asp-action="WhatToDo">
+                                <i class="fas fa-life-ring me-2"></i> @Localizer["WhatToDoDisaster"]
+                            </a></li>
+                            <li><a class="dropdown-item" asp-controller="Tips" asp-action="Planning">
+                                <i class="fas fa-clipboard-list me-2"></i> @Localizer["PlanningAhead"]
+                            </a></li>
+                            <li><a class="dropdown-item" asp-controller="Tips" asp-action="ReportDisaster">
+                                <i class="fas fa-exclamation-triangle me-2"></i> @Localizer["ReportDisaster"]
+                            </a></li>
+                            <li><a class="dropdown-item" asp-controller="Tips" asp-action="DisasterRisks">
+                                <i class="fas fa-chart-line me-2"></i> @Localizer["DisasterRisks"]
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="fas fa-hands-helping me-1"></i> @Localizer["EmergencyResponse"]
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="Incident" asp-action="Index">
+                                <i class="fas fa-exclamation-circle me-2"></i> @Localizer["ActiveIncidents"]
+                            </a></li>
+                            <li><a class="dropdown-item" asp-controller="Incident" asp-action="Report">
+                                <i class="fas fa-plus-circle me-2"></i> @Localizer["ReportIncident"]
+                            </a></li>
+                            <li><a class="dropdown-item" asp-controller="Incident" asp-action="Map">
+                                <i class="fas fa-map-marked-alt me-2"></i> @Localizer["IncidentsMap"]
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" asp-controller="Shelter" asp-action="Index">
+                                <i class="fas fa-home me-2"></i> @Localizer["EmergencyShelters"]
+                            </a></li>
+                            <li><a class="dropdown-item" asp-controller="Shelter" asp-action="FindNearby">
+                                <i class="fas fa-location-arrow me-2"></i> @Localizer["FindNearbyShelter"]
+                            </a></li>
+                            <li><a class="dropdown-item" asp-controller="Shelter" asp-action="Map">
+                                <i class="fas fa-map-marker-alt me-2"></i> @Localizer["SheltersMap"]
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    @if (User.IsInRole("user"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="IoTMonitoring" asp-action="Index">
+                                <i class="fas fa-satellite-dish me-1"></i> @Localizer["IoTMonitoring"]
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Analytics" asp-action="Dashboard">
+                                <i class="fas fa-chart-bar me-1"></i> @Localizer["Analytics"]
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
+                                <i class="fas fa-tachometer-alt me-1"></i> @Localizer["Dashboard"]
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="FloodData" asp-action="Predictions">
+                                <i class="fas fa-chart-area me-1"></i> @Localizer["Predictions"]
+                            </a>
+                        </li>
+                    }
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="ContactForms" asp-action="ContactUs">
+                            <i class="fas fa-envelope me-1"></i> @Localizer["Contact"]
+                        </a>
+                    </li>
+                    
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @if (User.IsInRole("admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Index">
+                                    <i class="fas fa-user-shield me-1"></i> @Localizer["AdminPanel"]
+                                </a>
+                            </li>
+                        }
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i> Account
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" asp-controller="UserAuthentication" asp-action="Detail">
+                                    <i class="fas fa-user me-2"></i> @Localizer["Profile"]
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" asp-controller="UserAuthentication" asp-action="Logout">
+                                    <i class="fas fa-sign-out-alt me-2"></i> @Localizer["Logout"]
+                                </a></li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="UserAuthentication" asp-action="Register">
+                                <i class="fas fa-user-plus me-1"></i> @Localizer["Register"]
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-light text-primary px-3 ms-2" asp-controller="UserAuthentication" asp-action="Login">
+                                <i class="fas fa-sign-in-alt me-1"></i> @Localizer["Login"]
+                            </a>
+                        </li>
+                    }
+                    
+                    <li class="nav-item ms-2">
+                        @await Html.PartialAsync("_LanguageSwitcher")
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <main role="main" class="pb-5">
+        @RenderBody()
+    </main>
+
+    
+    <!-- Modern Footer -->
+    <footer class="modern-footer mt-5">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h5 class="mb-3">
+                        <i class="fas fa-shield-alt me-2"></i>GDMS
+                    </h5>
+                    <p class="text-light opacity-75">
+                        Global Disaster Management System - A comprehensive platform for disaster prediction, 
+                        emergency response, and real-time alerts. Protecting communities worldwide.
+                    </p>
+                    <div class="social-links mt-3">
+                        <a href="#" class="text-light opacity-75 me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light opacity-75 me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light opacity-75 me-3"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-light opacity-75"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-4 mb-lg-0">
+                    <h6 class="mb-3 text-light">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-light opacity-75 text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a asp-controller="ContactForms" asp-action="AboutUs" class="text-light opacity-75 text-decoration-none">About</a></li>
+                        <li class="mb-2"><a asp-controller="Incident" asp-action="Index" class="text-light opacity-75 text-decoration-none">Incidents</a></li>
+                        <li class="mb-2"><a asp-controller="Shelter" asp-action="Index" class="text-light opacity-75 text-decoration-none">Shelters</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-4 mb-lg-0">
+                    <h6 class="mb-3 text-light">Services</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a asp-controller="IoTMonitoring" asp-action="Index" class="text-light opacity-75 text-decoration-none">IoT Monitoring</a></li>
+                        <li class="mb-2"><a asp-controller="Analytics" asp-action="Dashboard" class="text-light opacity-75 text-decoration-none">Analytics</a></li>
+                        <li class="mb-2"><a asp-controller="Tips" asp-action="WhatToDo" class="text-light opacity-75 text-decoration-none">Safety Tips</a></li>
+                        <li class="mb-2"><a asp-controller="Incident" asp-action="Report" class="text-light opacity-75 text-decoration-none">Report Incident</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 col-md-4">
+                    <h6 class="mb-3 text-light">Contact</h6>
+                    <ul class="list-unstyled text-light opacity-75">
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2"></i>
+                            <a asp-controller="ContactForms" asp-action="ContactUs" class="text-light opacity-75 text-decoration-none">Contact Us</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2"></i>
+                            Emergency Hotline: 24/7
+                        </li>
+                        <li>
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Global Coverage
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="mt-4 mb-3" style="border-color: rgba(255,255,255,0.1);">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-light opacity-75">
+                        Copyright &copy; 2023-@DateTime.Now.Year GDMS - All Rights Reserved
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-light opacity-75 text-decoration-none me-3">Privacy</a>
+                    <a href="#" class="text-light opacity-75 text-decoration-none me-3">Disclaimer</a>
+                    <a href="#" class="text-light opacity-75 text-decoration-none">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <a id="backtotop" href="#top" style="background: var(--primary-color); color: white; position: fixed; right: 20px; bottom: 20px; width: 45px; height: 45px; border-radius: 50%; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s; z-index: 1000; text-decoration: none; line-height: 45px; text-align: center;">
+        <i class="fa fa-chevron-up" style="font-size: 16px; vertical-align: middle;"></i>
+    </a>
+
+    <!-- jQuery & Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- SignalR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script src="~/js/disaster-alerts.js" asp-append-version="true"></script>
+    
+    <!-- Emergency Response Common -->
+    <script src="~/js/emergency-common.js" asp-append-version="true"></script>
+    
+    <!-- Back to Top Script -->
+    <script>
+        $(document).ready(function() {
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 100) {
+                    $('#backtotop').fadeIn();
+                } else {
+                    $('#backtotop').fadeOut();
+                }
+            });
+            
+            $('#backtotop').click(function(e) {
+                e.preventDefault();
+                $('html, body').animate({scrollTop: 0}, 300);
+            });
+        });
+    </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

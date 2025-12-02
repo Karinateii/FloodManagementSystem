@@ -1,0 +1,58 @@
+@model GlobalDisasterManagement.Models.CsvFile
+@{
+    ViewData["Title"] = "Delete File";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-danger text-white py-3">
+                    <h4 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Delete File
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Warning:</strong> Are you sure you want to delete this file? This action cannot be undone and will permanently remove the file from the system.
+                    </div>
+
+                    <form method="post">
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-file me-1"></i>File Name
+                            </label>
+                            <input type="text" class="form-control" value="@Model.Name" readonly disabled />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-folder me-1"></i>File Path
+                            </label>
+                            <input type="text" class="form-control" value="@Model.Path" readonly disabled />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-clock me-1"></i>Upload Date
+                            </label>
+                            <input type="text" class="form-control" value="@Model.UploadDateTime" readonly disabled />
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i>Confirm Delete
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

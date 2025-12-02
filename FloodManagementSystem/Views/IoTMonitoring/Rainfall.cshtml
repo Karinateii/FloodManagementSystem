@@ -1,0 +1,280 @@
+@model List<GlobalDisasterManagement.Models.RainfallSensor>
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<GlobalDisasterManagement.Resources.SharedResources> Localizer
+
+@{
+    ViewData["Title"] = Localizer["Rainfall Monitoring"];
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="display-4 mb-2">
+                    <i class="fas fa-cloud-rain text-success"></i>
+                    @Localizer["Rainfall Monitoring"]
+                </h1>
+                <p class="text-muted">@Localizer["Track precipitation patterns and rainfall intensity across regions"]</p>
+            </div>
+            <div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> @Localizer["Back to Dashboard"]
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-1">@Localizer["Total Sensors"]</h6>
+                    <h2 class="mb-0 text-success">@Model.Count</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-1">@Localizer["Active"]</h6>
+                    <h2 class="mb-0 text-success">@Model.Count(s => s.Status == GlobalDisasterManagement.Models.SensorStatus.Active)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-1">@Localizer["Heavy Rain Areas"]</h6>
+                    <h2 class="mb-0 text-warning">@Model.Count(s => s.CurrentIntensity == GlobalDisasterManagement.Models.RainfallIntensity.Heavy || s.CurrentIntensity == GlobalDisasterManagement.Models.RainfallIntensity.VeryHeavy)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-1">@Localizer["24h Total"]</h6>
+                    @{
+                        var total24h = Model.Where(s => s.DailyRainfall.HasValue).Sum(s => s.DailyRainfall.Value);
+                    }
+                    <h2 class="mb-0 text-info">@total24h.ToString("F1")mm</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rainfall Chart -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-area"></i> @Localizer["24-Hour Rainfall Distribution"]
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="rainfallChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sensors Grid -->
+    <div class="row g-3">
+        @foreach (var sensor in Model.OrderByDescending(s => s.DailyRainfall))
+        {
+            var intensityClass = sensor.CurrentIntensity switch
+            {
+                GlobalDisasterManagement.Models.RainfallIntensity.VeryHeavy => "danger",
+                GlobalDisasterManagement.Models.RainfallIntensity.Heavy => "warning",
+                GlobalDisasterManagement.Models.RainfallIntensity.Moderate => "info",
+                GlobalDisasterManagement.Models.RainfallIntensity.Light => "success",
+                GlobalDisasterManagement.Models.RainfallIntensity.None => "secondary",
+                _ => "secondary"
+            };
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="card-title mb-1">@sensor.Name</h5>
+                                <small class="text-muted">@sensor.DeviceId</small>
+                            </div>
+                            <span class="badge bg-@intensityClass">
+                                @sensor.CurrentIntensity
+                            </span>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div class="text-center p-2 bg-light rounded">
+                                    <small class="text-muted d-block">@Localizer["Current"]</small>
+                                    <strong class="text-primary">@(sensor.CurrentRainfall?.ToString("F1") ?? "0") mm/h</strong>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center p-2 bg-light rounded">
+                                    <small class="text-muted d-block">@Localizer["24h Total"]</small>
+                                    <strong class="text-info">@(sensor.DailyRainfall?.ToString("F1") ?? "0") mm</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <p class="mb-1">
+                                <i class="fas fa-map-marker-alt text-primary"></i>
+                                <small>@sensor.Address</small>
+                            </p>
+                            <p class="mb-1">
+                                <i class="fas fa-cloud text-secondary"></i>
+                                <small>@Localizer["Type"]: @sensor.SensorType</small>
+                            </p>
+                            <p class="mb-0">
+                                <i class="fas fa-clock text-muted"></i>
+                                <small>
+                                    @if (sensor.LastDataReceivedDate.HasValue)
+                                    {
+                                        var timeAgo = DateTime.UtcNow - sensor.LastDataReceivedDate.Value;
+                                        if (timeAgo.TotalMinutes < 60)
+                                        {
+                                            <span>@((int)timeAgo.TotalMinutes)m ago</span>
+                                        }
+                                        else if (timeAgo.TotalHours < 24)
+                                        {
+                                            <span>@((int)timeAgo.TotalHours)h ago</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@sensor.LastDataReceivedDate.Value.ToString("MMM dd, HH:mm")</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>@Localizer["Never"]</span>
+                                    }
+                                </small>
+                            </p>
+                        </div>
+
+                        @if (sensor.AlertsEnabled && (sensor.CurrentIntensity == GlobalDisasterManagement.Models.RainfallIntensity.Heavy || sensor.CurrentIntensity == GlobalDisasterManagement.Models.RainfallIntensity.VeryHeavy))
+                        {
+                            <div class="alert alert-@intensityClass py-2 px-3 mb-2">
+                                <small>
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    @Localizer["High rainfall detected - Flood risk"]
+                                </small>
+                            </div>
+                        }
+
+                        <div class="d-grid">
+                            <a href="@Url.Action("SensorDetails", new { id = sensor.Id })" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-chart-line"></i> @Localizer["View Trends"]
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle"></i>
+                    @Localizer["No rainfall sensors registered yet"]
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@7.0.0/dist/browser/signalr.min.js"></script>
+    <script>
+        // Rainfall Chart
+        const ctx = document.getElementById('rainfallChart').getContext('2d');
+        const sensorData = @Html.Raw(Json.Serialize(Model.Select(s => new { 
+            name = s.Name, 
+            daily = s.DailyRainfall ?? 0,
+            hourly = s.HourlyRainfall ?? 0,
+            current = s.CurrentRainfall ?? 0
+        })));
+
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: sensorData.map(s => s.name),
+                datasets: [
+                    {
+                        label: '@Localizer["24h Rainfall (mm)"]',
+                        data: sensorData.map(s => s.daily),
+                        backgroundColor: 'rgba(25, 135, 84, 0.7)',
+                        borderColor: 'rgb(25, 135, 84)',
+                        borderWidth: 2
+                    },
+                    {
+                        label: '@Localizer["Current Rate (mm/h)"]',
+                        data: sensorData.map(s => s.current),
+                        backgroundColor: 'rgba(13, 110, 253, 0.7)',
+                        borderColor: 'rgb(13, 110, 253)',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '@Localizer["Rainfall (mm)"]'
+                        }
+                    }
+                }
+            }
+        });
+
+        // SignalR Connection
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/iotMonitoringHub")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("RainfallUpdate", function (data) {
+            console.log("Rainfall Update:", data);
+            const index = chart.data.labels.indexOf(data.SensorName);
+            if (index !== -1) {
+                chart.data.datasets[0].data[index] = data.Reading.DailyTotal || 0;
+                chart.data.datasets[1].data[index] = data.Reading.Rainfall || 0;
+                chart.update();
+            }
+            
+            if (data.Reading.Intensity === "Heavy" || data.Reading.Intensity === "VeryHeavy") {
+                showAlert('@Localizer["Heavy Rainfall Alert"]', `${data.SensorName}: ${data.Reading.Rainfall}mm/h - ${data.Reading.Intensity}`);
+            }
+        });
+
+        connection.start()
+            .then(() => {
+                console.log("SignalR Connected");
+                connection.invoke("SubscribeToSensorType", 2) // Rainfall = 2
+                    .catch(err => console.error(err));
+            })
+            .catch(err => console.error(err));
+
+        function showAlert(title, message) {
+            console.log(`${title}: ${message}`);
+        }
+    </script>
+}

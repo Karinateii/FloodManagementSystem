@@ -1,0 +1,255 @@
+@model IEnumerable<GlobalDisasterManagement.Models.DisasterIncident>
+
+@{
+    ViewData["Title"] = "Incidents Map";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Map Column -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-map-marked-alt"></i> Active Incidents Map</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div id="map" style="height: 75vh; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar with Legend and Filters -->
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-filter"></i> Filters</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Disaster Type</strong></label>
+                        <div class="form-check">
+                            <input class="form-check-input filter-checkbox" type="checkbox" value="Flood" id="filterFlood" checked>
+                            <label class="form-check-label" for="filterFlood">
+                                <i class="fas fa-water text-primary"></i> Flood
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input filter-checkbox" type="checkbox" value="Earthquake" id="filterEarthquake" checked>
+                            <label class="form-check-label" for="filterEarthquake">
+                                <i class="fas fa-house-damage text-danger"></i> Earthquake
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input filter-checkbox" type="checkbox" value="Fire" id="filterFire" checked>
+                            <label class="form-check-label" for="filterFire">
+                                <i class="fas fa-fire text-warning"></i> Fire
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input filter-checkbox" type="checkbox" value="Hurricane" id="filterHurricane" checked>
+                            <label class="form-check-label" for="filterHurricane">
+                                <i class="fas fa-wind text-info"></i> Hurricane
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input filter-checkbox" type="checkbox" value="Other" id="filterOther" checked>
+                            <label class="form-check-label" for="filterOther">
+                                <i class="fas fa-exclamation-triangle"></i> Other
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Severity</strong></label>
+                        <div class="form-check">
+                            <input class="form-check-input severity-checkbox" type="checkbox" value="Low" id="severityLow" checked>
+                            <label class="form-check-label" for="severityLow">
+                                <span class="badge bg-success">Low</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input severity-checkbox" type="checkbox" value="Moderate" id="severityModerate" checked>
+                            <label class="form-check-label" for="severityModerate">
+                                <span class="badge bg-warning">Moderate</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input severity-checkbox" type="checkbox" value="High" id="severityHigh" checked>
+                            <label class="form-check-label" for="severityHigh">
+                                <span class="badge bg-danger">High</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input severity-checkbox" type="checkbox" value="Critical" id="severityCritical" checked>
+                            <label class="form-check-label" for="severityCritical">
+                                <span class="badge bg-danger">Critical</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input severity-checkbox" type="checkbox" value="Catastrophic" id="severityCatastrophic" checked>
+                            <label class="form-check-label" for="severityCatastrophic">
+                                <span class="badge bg-dark">Catastrophic</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-list"></i> Summary</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Total Incidents:</strong> <span id="totalCount">@Model.Count()</span></p>
+                    <p><strong>Visible:</strong> <span id="visibleCount">@Model.Count()</span></p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-plus"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a asp-action="Report" class="btn btn-danger w-100 mb-2">
+                        <i class="fas fa-exclamation-triangle"></i> Report Incident
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary w-100 mb-2">
+                        <i class="fas fa-list"></i> List View
+                    </a>
+                    <a asp-controller="Shelter" asp-action="Map" class="btn btn-primary w-100">
+                        <i class="fas fa-home"></i> View Shelters Map
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <script>
+        // Initialize map centered on first incident or default location
+        var incidents = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            Model.Select(i => new {
+                id = i.Id,
+                lat = i.Latitude,
+                lng = i.Longitude,
+                title = i.Title,
+                type = i.DisasterType.ToString(),
+                severity = i.Severity.ToString(),
+                status = i.Status.ToString(),
+                address = i.Address,
+                reportedAt = i.ReportedAt.ToString("MMM dd, yyyy HH:mm")
+            })
+        ));
+
+        var map = L.map('map').setView([6.5244, 3.3792], 10); // Lagos default
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Custom marker colors based on severity
+        function getMarkerColor(severity) {
+            switch(severity) {
+                case 'Low': return 'green';
+                case 'Moderate': return 'orange';
+                case 'High': return 'red';
+                case 'Critical': return 'darkred';
+                case 'Catastrophic': return 'black';
+                default: return 'blue';
+            }
+        }
+
+        // Store all markers
+        var markers = [];
+
+        incidents.forEach(function(incident) {
+            if (incident.lat !== 0 && incident.lng !== 0) {
+                var markerIcon = L.divIcon({
+                    className: 'custom-marker',
+                    html: `<div style="background-color: ${getMarkerColor(incident.severity)}; 
+                                      width: 25px; height: 25px; border-radius: 50%; 
+                                      border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>`,
+                    iconSize: [25, 25],
+                    iconAnchor: [12, 12]
+                });
+
+                var marker = L.marker([incident.lat, incident.lng], { icon: markerIcon })
+                    .bindPopup(`
+                        <div style="min-width: 200px;">
+                            <h6><strong>${incident.title}</strong></h6>
+                            <p><strong>Type:</strong> ${incident.type}</p>
+                            <p><strong>Severity:</strong> <span class="badge bg-${getSeverityClass(incident.severity)}">${incident.severity}</span></p>
+                            <p><strong>Status:</strong> ${incident.status}</p>
+                            <p><strong>Location:</strong> ${incident.address}</p>
+                            <p><strong>Reported:</strong> ${incident.reportedAt}</p>
+                            <a href="/Incident/Details/${incident.id}" class="btn btn-primary btn-sm w-100">View Details</a>
+                        </div>
+                    `);
+
+                marker.incidentData = incident;
+                markers.push(marker);
+                marker.addTo(map);
+            }
+        });
+
+        function getSeverityClass(severity) {
+            switch(severity) {
+                case 'Low': return 'success';
+                case 'Moderate': return 'warning';
+                case 'High': return 'danger';
+                case 'Critical': return 'danger';
+                case 'Catastrophic': return 'dark';
+                default: return 'secondary';
+            }
+        }
+
+        // Filter functionality
+        function updateMarkers() {
+            var selectedTypes = [];
+            var selectedSeverities = [];
+
+            document.querySelectorAll('.filter-checkbox:checked').forEach(function(checkbox) {
+                selectedTypes.push(checkbox.value);
+            });
+
+            document.querySelectorAll('.severity-checkbox:checked').forEach(function(checkbox) {
+                selectedSeverities.push(checkbox.value);
+            });
+
+            var visibleCount = 0;
+
+            markers.forEach(function(marker) {
+                var shouldShow = selectedTypes.includes(marker.incidentData.type) && 
+                                selectedSeverities.includes(marker.incidentData.severity);
+                
+                if (shouldShow) {
+                    if (!map.hasLayer(marker)) {
+                        marker.addTo(map);
+                    }
+                    visibleCount++;
+                } else {
+                    if (map.hasLayer(marker)) {
+                        map.removeLayer(marker);
+                    }
+                }
+            });
+
+            document.getElementById('visibleCount').textContent = visibleCount;
+        }
+
+        // Attach event listeners to checkboxes
+        document.querySelectorAll('.filter-checkbox, .severity-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('change', updateMarkers);
+        });
+
+        // Fit map to show all markers
+        if (markers.length > 0) {
+            var group = new L.featureGroup(markers);
+            map.fitBounds(group.getBounds().pad(0.1));
+        }
+    </script>
+}

@@ -1,0 +1,445 @@
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<GlobalDisasterManagement.Resources.SharedResources> Localizer
+@{
+    ViewData["Title"] = Localizer["Dashboard"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <div class="mb-4">
+        <h2 class="fw-bold mb-2"><i class="fas fa-chart-line me-2"></i>@Localizer["Dashboard"]</h2>
+        <p class="text-muted">Real-time disaster predictions and analytics</p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4 g-3">
+        <div class="col-md-3">
+            <div class="card modern-card text-white" style="background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h5 class="card-title mb-0">@Localizer["TotalCities"]</h5>
+                        <i class="fas fa-city fa-2x opacity-75"></i>
+                    </div>
+                    <p class="display-4 mb-0 fw-bold">@ViewBag.TotalCities</p>
+                    <small class="opacity-75">Monitored regions</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card modern-card text-white" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h5 class="card-title mb-0">@Localizer["TotalLGAs"]</h5>
+                        <i class="fas fa-map-marked-alt fa-2x opacity-75"></i>
+                    </div>
+                    <p class="display-4 mb-0 fw-bold">@ViewBag.TotalLGAs</p>
+                    <small class="opacity-75">Local areas</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card modern-card text-white" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h5 class="card-title mb-0">@Localizer["TotalPredictions"]</h5>
+                        <i class="fas fa-chart-bar fa-2x opacity-75"></i>
+                    </div>
+                    <p class="display-4 mb-0 fw-bold">@ViewBag.TotalPredictions</p>
+                    <small class="opacity-75">Total predictions</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card modern-card text-white" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h5 class="card-title mb-0">@Localizer["HighRisk"]</h5>
+                        <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
+                    </div>
+                    <p class="display-4 mb-0 fw-bold">@ViewBag.HighRiskPredictions</p>
+                    <small class="opacity-75">@ViewBag.RiskPercentage% of total</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="row mb-4 g-3">
+        <div class="col-md-8">
+            <div class="card modern-card">
+                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-chart-line me-2 text-primary"></i>Monthly Disaster Predictions</h5>
+                    <select id="yearSelector" class="form-select form-select-sm" style="width: auto;">
+                        <option value="2024" selected>2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+                <div class="card-body">
+                    <canvas id="monthlyChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card modern-card">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="fas fa-chart-pie me-2 text-primary"></i>Risk Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="riskPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="row mb-4 g-3">
+        <div class="col-md-6">
+            <div class="card modern-card">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="fas fa-city me-2 text-primary"></i>Top 10 Cities by High Risk</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="cityChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card modern-card">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="fas fa-chart-area me-2 text-primary"></i>Yearly Trends</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="yearlyTrendChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 3 -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>LGA Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="lgaChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Recent Predictions</h5>
+                </div>
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-sm table-striped" id="recentPredictionsTable">
+                        <thead>
+                            <tr>
+                                <th>City</th>
+                                <th>Month</th>
+                                <th>Year</th>
+                                <th>Risk</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        // Chart.js Configuration
+        const chartColors = {
+            primary: '#0d6efd',
+            success: '#198754',
+            danger: '#dc3545',
+            warning: '#ffc107',
+            info: '#0dcaf0',
+            secondary: '#6c757d'
+        };
+
+        let monthlyChart, riskPieChart, cityChart, yearlyTrendChart, lgaChart;
+
+        // Load Monthly Predictions Chart
+        async function loadMonthlyChart(year = '2024') {
+            try {
+                const response = await fetch(`/Dashboard/GetPredictionsByMonth?year=${year}`);
+                const data = await response.json();
+
+                const ctx = document.getElementById('monthlyChart').getContext('2d');
+                
+                if (monthlyChart) {
+                    monthlyChart.destroy();
+                }
+
+                monthlyChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(d => d.month),
+                        datasets: [
+                            {
+                                label: 'High Risk',
+                                data: data.map(d => d.highRisk),
+                                backgroundColor: chartColors.danger,
+                                borderColor: chartColors.danger,
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Low Risk',
+                                data: data.map(d => d.lowRisk),
+                                backgroundColor: chartColors.success,
+                                borderColor: chartColors.success,
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading monthly chart:', error);
+            }
+        }
+
+        // Load Risk Pie Chart
+        async function loadRiskPieChart() {
+            try {
+                const ctx = document.getElementById('riskPieChart').getContext('2d');
+                
+                const highRisk = @ViewBag.HighRiskPredictions;
+                const lowRisk = @ViewBag.TotalPredictions - highRisk;
+
+                riskPieChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['High Risk', 'Low Risk'],
+                        datasets: [{
+                            data: [highRisk, lowRisk],
+                            backgroundColor: [chartColors.danger, chartColors.success],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading risk pie chart:', error);
+            }
+        }
+
+        // Load City Chart
+        async function loadCityChart() {
+            try {
+                const response = await fetch('/Dashboard/GetPredictionsByCity?limit=10');
+                const data = await response.json();
+
+                const ctx = document.getElementById('cityChart').getContext('2d');
+                
+                cityChart = new Chart(ctx, {
+                    type: 'horizontalBar',
+                    data: {
+                        labels: data.map(d => d.city),
+                        datasets: [{
+                            label: 'High Risk Predictions',
+                            data: data.map(d => d.highRisk),
+                            backgroundColor: chartColors.danger,
+                            borderColor: chartColors.danger,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            x: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading city chart:', error);
+            }
+        }
+
+        // Load Yearly Trend Chart
+        async function loadYearlyTrendChart() {
+            try {
+                const response = await fetch('/Dashboard/GetYearlyTrends');
+                const data = await response.json();
+
+                const ctx = document.getElementById('yearlyTrendChart').getContext('2d');
+                
+                yearlyTrendChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.map(d => d.year),
+                        datasets: [
+                            {
+                                label: 'High Risk',
+                                data: data.map(d => d.highRisk),
+                                backgroundColor: chartColors.danger,
+                                borderColor: chartColors.danger,
+                                tension: 0.4,
+                                fill: false
+                            },
+                            {
+                                label: 'Low Risk',
+                                data: data.map(d => d.lowRisk),
+                                backgroundColor: chartColors.success,
+                                borderColor: chartColors.success,
+                                tension: 0.4,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading yearly trend chart:', error);
+            }
+        }
+
+        // Load LGA Chart
+        async function loadLGAChart() {
+            try {
+                const response = await fetch('/Dashboard/GetLGAStats');
+                const data = await response.json();
+
+                const ctx = document.getElementById('lgaChart').getContext('2d');
+                
+                lgaChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(d => d.lga),
+                        datasets: [{
+                            label: 'High Risk Count',
+                            data: data.map(d => d.highRiskCount),
+                            backgroundColor: chartColors.warning,
+                            borderColor: chartColors.warning,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading LGA chart:', error);
+            }
+        }
+
+        // Load Recent Predictions
+        async function loadRecentPredictions() {
+            try {
+                const response = await fetch('/Dashboard/GetRecentPredictions?limit=10');
+                const data = await response.json();
+
+                const tbody = document.querySelector('#recentPredictionsTable tbody');
+                tbody.innerHTML = '';
+
+                data.forEach(pred => {
+                    const row = document.createElement('tr');
+                    const riskBadge = pred.isHighRisk 
+                        ? '<span class="badge bg-danger">High</span>' 
+                        : '<span class="badge bg-success">Low</span>';
+                    
+                    row.innerHTML = `
+                        <td>${pred.city}</td>
+                        <td>${pred.month}</td>
+                        <td>${pred.year}</td>
+                        <td>${riskBadge}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading recent predictions:', error);
+            }
+        }
+
+        // Initialize all charts on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMonthlyChart('2024');
+            loadRiskPieChart();
+            loadCityChart();
+            loadYearlyTrendChart();
+            loadLGAChart();
+            loadRecentPredictions();
+
+            // Year selector change event
+            document.getElementById('yearSelector').addEventListener('change', function(e) {
+                loadMonthlyChart(e.target.value);
+            });
+
+            // Refresh data every 5 minutes
+            setInterval(() => {
+                const selectedYear = document.getElementById('yearSelector').value;
+                loadMonthlyChart(selectedYear);
+                loadRecentPredictions();
+            }, 300000);
+        });
+    </script>
+}

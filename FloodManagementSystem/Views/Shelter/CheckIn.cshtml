@@ -1,0 +1,204 @@
+@model GlobalDisasterManagement.Models.ShelterCheckIn
+
+@{
+    ViewData["Title"] = "Shelter Check-In";
+    var shelterName = ViewBag.ShelterName as string ?? "Shelter";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3><i class="fas fa-sign-in-alt"></i> Check In to @shelterName</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Please provide accurate information to help us serve you better during this emergency.
+                    </div>
+
+                    <form asp-action="CheckIn" method="post">
+                        <input type="hidden" asp-for="ShelterId" />
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <!-- Personal Information -->
+                        <h5 class="mb-3"><i class="fas fa-user"></i> Personal Information</h5>
+                        
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label">Full Name *</label>
+                            <input asp-for="FullName" class="form-control" placeholder="Enter your full name" required />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Age" class="form-label">Age *</label>
+                                <input asp-for="Age" type="number" class="form-control" min="0" max="150" required />
+                                <span asp-validation-for="Age" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Gender" class="form-label">Gender *</label>
+                                <select asp-for="Gender" class="form-select" required>
+                                    <option value="">Select gender...</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                    <option value="PreferNotToSay">Prefer not to say</option>
+                                </select>
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label">Phone Number *</label>
+                            <input asp-for="PhoneNumber" type="tel" class="form-control" placeholder="+234 XXX XXX XXXX" required />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="FamilyMembers" class="form-label">Number of Family Members (including yourself) *</label>
+                            <input asp-for="FamilyMembers" type="number" class="form-control" min="1" value="1" required />
+                            <small class="form-text text-muted">Total number of people in your group</small>
+                            <span asp-validation-for="FamilyMembers" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Medical Information -->
+                        <h5 class="mb-3"><i class="fas fa-medkit"></i> Medical Information</h5>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="HasMedicalNeeds" class="form-check-input" type="checkbox" id="hasMedicalNeeds" />
+                                <label asp-for="HasMedicalNeeds" class="form-check-label" for="hasMedicalNeeds">
+                                    I or my family members have medical needs
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3" id="medicalConditionsDiv" style="display: none;">
+                            <label asp-for="MedicalConditions" class="form-label">Medical Conditions</label>
+                            <textarea asp-for="MedicalConditions" class="form-control" rows="3" 
+                                      placeholder="Please describe any medical conditions, allergies, or medications needed"></textarea>
+                            <span asp-validation-for="MedicalConditions" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="NeedsSpecialAssistance" class="form-check-input" type="checkbox" id="needsAssistance" />
+                                <label asp-for="NeedsSpecialAssistance" class="form-check-label" for="needsAssistance">
+                                    Needs special assistance (elderly, disabled, pregnant, etc.)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3" id="specialRequirementsDiv" style="display: none;">
+                            <label asp-for="SpecialRequirements" class="form-label">Special Requirements</label>
+                            <textarea asp-for="SpecialRequirements" class="form-control" rows="3" 
+                                      placeholder="Please describe any special requirements or assistance needed"></textarea>
+                            <span asp-validation-for="SpecialRequirements" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Emergency Contact -->
+                        <h5 class="mb-3"><i class="fas fa-phone-alt"></i> Emergency Contact</h5>
+
+                        <div class="mb-3">
+                            <label asp-for="EmergencyContactName" class="form-label">Emergency Contact Name</label>
+                            <input asp-for="EmergencyContactName" class="form-control" placeholder="Name of person to contact in case of emergency" />
+                            <span asp-validation-for="EmergencyContactName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="EmergencyContactPhone" class="form-label">Emergency Contact Phone</label>
+                            <input asp-for="EmergencyContactPhone" type="tel" class="form-control" placeholder="+234 XXX XXX XXXX" />
+                            <span asp-validation-for="EmergencyContactPhone" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Evacuation Information -->
+                        <h5 class="mb-3"><i class="fas fa-map-marker-alt"></i> Evacuation Information</h5>
+
+                        <div class="mb-3">
+                            <label asp-for="EvacuatedFromAddress" class="form-label">Evacuated From (Address/Location)</label>
+                            <textarea asp-for="EvacuatedFromAddress" class="form-control" rows="2" 
+                                      placeholder="Address or location you evacuated from"></textarea>
+                            <span asp-validation-for="EvacuatedFromAddress" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Notes" class="form-label">Additional Notes</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" 
+                                      placeholder="Any other information we should know"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check"></i> Complete Check-In
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.ShelterId" class="btn btn-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Safety Tips -->
+            <div class="card mt-4">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Safety Tips</h5>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Keep your belongings secure and labeled with your name</li>
+                        <li>Follow all shelter rules and instructions from staff</li>
+                        <li>Report any medical emergencies immediately</li>
+                        <li>Stay informed about disaster updates and evacuation orders</li>
+                        <li>Conserve resources and be considerate of others</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            // Show/hide medical conditions field
+            $('#hasMedicalNeeds').change(function() {
+                if ($(this).is(':checked')) {
+                    $('#medicalConditionsDiv').slideDown();
+                } else {
+                    $('#medicalConditionsDiv').slideUp();
+                    $('#MedicalConditions').val('');
+                }
+            });
+
+            // Show/hide special requirements field
+            $('#needsAssistance').change(function() {
+                if ($(this).is(':checked')) {
+                    $('#specialRequirementsDiv').slideDown();
+                } else {
+                    $('#specialRequirementsDiv').slideUp();
+                    $('#SpecialRequirements').val('');
+                }
+            });
+
+            // Trigger on page load if already checked
+            if ($('#hasMedicalNeeds').is(':checked')) {
+                $('#medicalConditionsDiv').show();
+            }
+            if ($('#needsAssistance').is(':checked')) {
+                $('#specialRequirementsDiv').show();
+            }
+        });
+    </script>
+}

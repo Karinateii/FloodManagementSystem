@@ -1,0 +1,281 @@
+@model GlobalDisasterManagement.Models.EmergencyShelter
+
+@{
+    ViewData["Title"] = "Shelter Details";
+    var occupancyPercentage = Model.TotalCapacity > 0 
+        ? (double)Model.CurrentOccupancy / Model.TotalCapacity * 100 
+        : 0;
+    var capacityClass = occupancyPercentage >= 90 ? "danger" : occupancyPercentage >= 70 ? "warning" : "success";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-home"></i> Shelter Details</h2>
+        <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to List</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Main Information -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">@Model.Name</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>Type:</strong> @Model.Type.ToString()</p>
+                            <p><strong>Status:</strong> 
+                                @if (Model.IsActive && Model.IsOperational)
+                                {
+                                    <span class="badge bg-success">Active & Operational</span>
+                                }
+                                else if (Model.IsActive)
+                                {
+                                    <span class="badge bg-warning">Active (Limited Operations)</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Closed</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            @if (Model.OpenedAt.HasValue)
+                            {
+                                <p><strong>Opened:</strong> @Model.OpenedAt.Value.ToString("MMMM dd, yyyy HH:mm")</p>
+                            }
+                            @if (Model.ClosedAt.HasValue)
+                            {
+                                <p><strong>Closed:</strong> @Model.ClosedAt.Value.ToString("MMMM dd, yyyy HH:mm")</p>
+                            }
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- Capacity Information -->
+                    <h5>Capacity Status</h5>
+                    <div class="row text-center mb-3">
+                        <div class="col-4">
+                            <h3 class="text-primary">@Model.TotalCapacity</h3>
+                            <p class="text-muted">Total Capacity</p>
+                        </div>
+                        <div class="col-4">
+                            <h3 class="text-@capacityClass">@Model.CurrentOccupancy</h3>
+                            <p class="text-muted">Current Occupancy</p>
+                        </div>
+                        <div class="col-4">
+                            <h3 class="text-success">@Model.AvailableSpaces</h3>
+                            <p class="text-muted">Available Spaces</p>
+                        </div>
+                    </div>
+
+                    <div class="progress mb-3" style="height: 30px;">
+                        <div class="progress-bar bg-@capacityClass" role="progressbar" 
+                             style="width: @occupancyPercentage%" 
+                             aria-valuenow="@occupancyPercentage" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            @occupancyPercentage.ToString("0.0")% Full
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- Location -->
+                    <h5>Location</h5>
+                    <p><i class="fas fa-map-marker-alt"></i> @Model.Address</p>
+                    @if (Model.Latitude != 0 && Model.Longitude != 0)
+                    {
+                        <p><strong>Coordinates:</strong> @Model.Latitude, @Model.Longitude</p>
+                        <div id="map" style="height: 300px;" class="mb-3"></div>
+                    }
+
+                    <hr />
+
+                    <!-- Facilities & Amenities -->
+                    <h5>Facilities & Amenities</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>
+                                <i class="fas fa-medkit @(Model.HasMedicalFacility ? "text-success" : "text-muted")"></i>
+                                Medical Facility: <strong>@(Model.HasMedicalFacility ? "Available" : "Not Available")</strong>
+                            </p>
+                            <p>
+                                <i class="fas fa-utensils @(Model.HasFood ? "text-success" : "text-muted")"></i>
+                                Food Services: <strong>@(Model.HasFood ? "Available" : "Not Available")</strong>
+                            </p>
+                            <p>
+                                <i class="fas fa-tint @(Model.HasWater ? "text-success" : "text-muted")"></i>
+                                Water Supply: <strong>@(Model.HasWater ? "Available" : "Not Available")</strong>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p>
+                                <i class="fas fa-bolt @(Model.HasPower ? "text-success" : "text-muted")"></i>
+                                Power/Electricity: <strong>@(Model.HasPower ? "Available" : "Not Available")</strong>
+                            </p>
+                            <p>
+                                <i class="fas fa-shower @(Model.HasSanitation ? "text-success" : "text-muted")"></i>
+                                Sanitation Facilities: <strong>@(Model.HasSanitation ? "Available" : "Not Available")</strong>
+                            </p>
+                            <p>
+                                <i class="fas fa-shield-alt @(Model.HasSecurity ? "text-success" : "text-muted")"></i>
+                                Security Services: <strong>@(Model.HasSecurity ? "Available" : "Not Available")</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    @if (Model.IsAccessible)
+                    {
+                        <p class="text-success">
+                            <i class="fas fa-wheelchair"></i> <strong>This shelter is wheelchair accessible</strong>
+                        </p>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Amenities))
+                    {
+                        <hr />
+                        <h5>Additional Amenities</h5>
+                        <p>@Model.Amenities</p>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.SpecialNotes))
+                    {
+                        <hr />
+                        <h5>Special Notes</h5>
+                        <div class="alert alert-info">@Model.SpecialNotes</div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Contact Information -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fas fa-phone"></i> Contact Information</h5>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.ContactPhone))
+                    {
+                        <p><strong>Phone:</strong><br />
+                        <a href="tel:@Model.ContactPhone">@Model.ContactPhone</a></p>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ContactEmail))
+                    {
+                        <p><strong>Email:</strong><br />
+                        <a href="mailto:@Model.ContactEmail">@Model.ContactEmail</a></p>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ManagerName))
+                    {
+                        <p><strong>Manager:</strong><br />@Model.ManagerName</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Check-In Action -->
+            @if (Model.IsActive && Model.IsOperational && Model.AvailableSpaces > 0)
+            {
+                <div class="card mb-4 border-success">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-sign-in-alt"></i> Check In</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>This shelter has <strong>@Model.AvailableSpaces</strong> spaces available.</p>
+                        <a asp-action="CheckIn" asp-route-shelterId="@Model.Id" class="btn btn-success w-100">
+                            <i class="fas fa-sign-in-alt"></i> Check In Now
+                        </a>
+                    </div>
+                </div>
+            }
+            else if (Model.AvailableSpaces <= 0)
+            {
+                <div class="card mb-4 border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <h5><i class="fas fa-ban"></i> At Capacity</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>This shelter is currently at full capacity.</p>
+                        <a asp-action="FindNearby" class="btn btn-primary w-100">
+                            <i class="fas fa-search"></i> Find Other Shelters
+                        </a>
+                    </div>
+                </div>
+            }
+
+            <!-- Quick Links -->
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5><i class="fas fa-link"></i> Quick Links</h5>
+                </div>
+                <div class="card-body">
+                    <a asp-action="Map" class="btn btn-info w-100 mb-2">
+                        <i class="fas fa-map-marked-alt"></i> View All Shelters on Map
+                    </a>
+                    <a asp-controller="Incident" asp-action="Index" class="btn btn-warning w-100 mb-2">
+                        <i class="fas fa-exclamation-triangle"></i> View Active Incidents
+                    </a>
+                    <a asp-controller="Incident" asp-action="Report" class="btn btn-danger w-100">
+                        <i class="fas fa-plus"></i> Report Incident
+                    </a>
+                </div>
+            </div>
+
+            <!-- Admin Actions -->
+            @if (User.IsInRole("admin"))
+            {
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5><i class="fas fa-tools"></i> Admin Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <a asp-action="Occupants" asp-route-shelterId="@Model.Id" class="btn btn-primary w-100 mb-2">
+                            <i class="fas fa-users"></i> View Occupants
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning w-100">
+                            <i class="fas fa-edit"></i> Edit Shelter
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @if (Model.Latitude != 0 && Model.Longitude != 0)
+    {
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        
+        <script>
+            var map = L.map('map').setView([@Model.Latitude, @Model.Longitude], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            var marker = L.marker([@Model.Latitude, @Model.Longitude]).addTo(map);
+            marker.bindPopup("<b>@Model.Name</b><br>@Model.Address<br>Capacity: @Model.CurrentOccupancy/@Model.TotalCapacity").openPopup();
+        </script>
+    }
+}

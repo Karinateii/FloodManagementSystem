@@ -1,0 +1,252 @@
+@{
+    ViewData["Title"] = "About Us";
+}
+
+<!-- Page Header -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white;">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-transparent mb-3">
+                <li class="breadcrumb-item"><a href="/" class="text-white opacity-75">Home</a></li>
+                <li class="breadcrumb-item active text-white">About Us</li>
+            </ol>
+        </nav>
+        <h1 class="display-4 fw-bold mb-3">
+            <i class="fas fa-info-circle me-3"></i>About GDMS
+        </h1>
+  font-size: 18px;
+  letter-spacing: .8px;
+}
+
+p {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: .8px;
+  color: black;
+}
+
+.navbar {
+  background: #F0E7D8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 4rem;
+}
+
+.navbar a {
+  color: #AB9B96;
+  position: relative;
+}
+
+
+
+.header {
+  background: #F0E7D8;
+  padding: 4rem;
+}
+
+.header__title {
+  color: #AB9B96;
+  font-family: "Montserrat", sans-serif;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: .5px;
+  font-size: 42px;
+  max-width: 700px;
+}
+
+.header__subtitle {
+  color: #AB9B96;
+  font-family: "Montserrat", sans-serif;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: .5px;
+  font-size: 24px;
+  max-width: 700px;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.jumpto {
+  background: #F0E7D8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0;
+  height: 100px;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  z-index: 10;
+  width: 100%;
+}
+
+.jumpto a {
+  color: #AB9B96;
+  position: relative;
+}
+
+.wrapperq {
+  display: flex;
+  flex-direction: column;
+}
+
+.image {
+  position: static;
+  height: 50vh;
+  width: 100vw;
+}
+
+.image img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.column {
+  background: #F0E7D8;
+  color: #AB9B96;
+  padding: 4rem 6rem;
+  width: 100%;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+section {
+  padding-bottom: 2rem;
+}
+
+section:last-of-type {
+  padding-bottom: 0;
+}
+
+.jumpto__target {
+  margin-top: 6rem;
+}
+
+.banner {
+  background: #F0E7D8;
+  color: #AB9B96;
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner__title {
+  text-transform: uppercase;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  letter-spacing: .8px;
+}
+
+.banner__button {
+  align-items: center;
+  border-radius: 4px;
+  background: #eb420f;
+  color: #F0E7D8;
+  display: flex;
+  justify-content: center;
+  padding: 0.65rem 1.3rem;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.banner__button:hover {
+  color: #0a0606;
+  background-color: beige;
+}
+
+.footer {
+  background: #AB9B96;
+  color: #F0E7D8;
+  padding: 2rem;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+.menu{
+
+  display: flex;
+  flex-direction: row;
+  margin-left: 4px;
+}
+
+  .wrapperq {
+    flex-direction: row;
+  }
+  
+  .column {
+    width: 50%;
+  }
+  
+  .image {
+    height: calc(100vh - 100px);
+    height: -moz-calc(100vh - 100px);
+    height: -webkit-calc(100vh - 100px);
+    height: -o-calc(100vh - 100px);
+    width: 50vw;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 100px;
+    align-self: flex-start;
+  }
+
+</style>
+<body id="top">
+    <div class="header">
+      <h1 class="header__title">ABOUT US</h1>
+      <p>At GDMS (Global Disaster Management System), we are committed to providing effective methods for preventing disaster damage to homes, lives, and businesses worldwide. Our team of experts has years of experience in disaster management and is dedicated to staying up-to-date with the latest technology and best practices for reducing losses from floods, earthquakes, fires, hurricanes, and other disasters.</p>
+    </div>
+    <div class="main-content">
+@*      <div class="jumpto">
+        <ul class="menu" data-smooth-scroll data-offset="90">
+          <li><a href="#first">First Section</a></li>
+          <li><a href="#second">Second Section</a></li>
+          <li><a href="#third">Third Section</a></li>
+          <li><a href="#fourth">Fourth Section</a></li>
+        </ul>
+      </div>
+*@      <div class="wrapperq">
+          <div class="image">
+            <img src="../images/Flooded-Ijaiye.jpg">
+          </div>
+      </div>
+      <div class="column">  
+        <section>
+          <span id="first" class="jumpto__target"></span>
+          <h4 class="title">Our vision</h4>
+          <p> Our vision is to create a Nigerian flood prevention site that is committed to providing timely and accurate information to the public, empowering individuals and communities to take proactive measures to prevent and mitigate the impact of flooding in Nigeria. We envision a future where our site serves as a trusted source of information and resources for flood prevention, promoting a culture of preparedness and resilience in the face of natural disasters. Through collaboration with government agencies, NGOs, and other stakeholders, we aim to build a community-driven platform that promotes sustainable and equitable solutions to Nigeria's flood challenges, ensuring the safety and well-being of all Nigerians.</p>
+        </section>
+        <section>
+          <span id="second" class="jumpto__target"></span>
+          <h4 class="title">Our Mission</h4>
+            <p>Our Nigerian flood prevention site aims to reduce the impact of flooding on individuals, communities, and the environment by providing timely and accurate flood risk information, promoting flood preparedness and response measures, and advocating for sustainable flood prevention and management practices.
+        </p>
+        </section>
+        <section>
+          <span id="third" class="jumpto__target"></span>
+          <h4 class="title">Comitment</h4>      
+          <p>We are committed to leveraging modern technology and scientific expertise to provide up-to-date flood risk assessments, flood warning systems, and flood mapping tools to aid decision-making and planning at all levels. We prioritize community engagement and education, working closely with local authorities, civil society groups, and vulnerable populations to develop and implement effective flood preparedness and response strategies.</p>
+        </section>
+        <section>
+          <span id="fourth" class="jumpto__target"></span>
+          <h4 class="title">Togetherness</h4>
+          <p>At the heart of our mission is a commitment to sustainable flood prevention and management practices that protect both people and the environment. We seek to raise awareness about the links between land use, climate change, and flooding, and to advocate for policies that support resilient and adaptive communities. By working together with our partners and stakeholders, we aim to create a future where floods no longer pose a significant threat to the wellbeing and prosperity of Nigerians.</p>
+        </section>
+      </div>
+    </div>
+    <div class="banner">
+      <h4 class="banner__title">Stay up to date on flood news in lagos; sign up for our email updates by clicking the button below!</h4>
+      <p>Let us keep you safe by giving you the timely heads up and neccessary information to survive!</p>
+      <a class="banner__button">Register Here</a>
+    </div>
+</body>

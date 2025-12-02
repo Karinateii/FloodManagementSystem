@@ -1,0 +1,46 @@
+@using Microsoft.Data.SqlClient;
+@model CsvFileCity
+@{
+    ViewBag.Title = "Edit CSV";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+}
+<div class="card" style="margin-top:10%; margin-right:25%; margin-bottom:10%; margin-left:25%">
+    <div class="card-title m-0" style="background-color: #7c452b">
+        <h2 class="text-white text-center p-3">Upload A New File</h2>
+    </div>
+    <div class="card-body" style="background-color: #e4c35a;">
+        <form asp-controller="CsvFile" asp-action="Upload" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">CSV file:</label>
+                <input type="file" name="file" id="file" class="form-control-file" />
+            </div>
+            <div class="form-group col-md-12 mb-2 row text-dark fw-semibold">
+                <label asp-for="Year" class="col-md-6">Year:</label>
+                <input type="text" asp-for="Year" class="col-md-6" />
+            </div>
+            <div class="form-group col-md-12 mb-2 row text-dark fw-semibold">
+                <label asp-for="CityId" class="col-md-6">City: </label>
+                <div class="col-md-6">
+                    <select asp-for="CityId" class="col-md-6" asp-items="@ViewBag.Cities"><option selected disabled>--Select City--</option></select>
+                </div>
+                <span asp-validation-for="CityId" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-12 mb-2 row text-dark fw-semibold">
+                <label asp-for="ModelId" class="col-md-6">Model: </label>
+                <div class="col-md-6">
+                    <select asp-for="ModelId" class="col-md-6" asp-items="@ViewBag.Models"><option selected disabled>--Select Model--</option></select>
+                </div>
+                <span asp-validation-for="ModelId" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,221 @@
+@model IEnumerable<GlobalDisasterManagement.Models.DisasterIncident>
+@using Microsoft.Extensions.Localization
+@using GlobalDisasterManagement.Resources
+@inject IStringLocalizer<SharedResources> Localizer
+
+@{
+    ViewData["Title"] = Localizer["ActiveIncidents"];
+}
+
+<div class="container mt-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="fas fa-exclamation-triangle text-danger me-2"></i>@Localizer["ActiveDisasterIncidents"]
+            </h2>
+            <p class="text-muted mb-0">Monitor and respond to active disaster situations</p>
+        </div>
+        <a asp-action="Report" class="btn btn-danger btn-lg">
+            <i class="fas fa-plus me-2"></i>@Localizer["ReportIncident"]
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter Section -->
+    <div class="card modern-card mb-4">
+        <div class="card-body p-4">
+            <h5 class="mb-3"><i class="fas fa-filter me-2"></i>Filter Incidents</h5>
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label for="disasterType" class="form-label fw-semibold">@Localizer["DisasterType"]</label>
+                    <select class="form-select" id="disasterType" name="disasterType">
+                        <option value="">@Localizer["AllTypes"]</option>
+                        <option value="Flood">@Localizer["Flood"]</option>
+                        <option value="Earthquake">@Localizer["Earthquake"]</option>
+                        <option value="Fire">@Localizer["Fire"]</option>
+                        <option value="Hurricane">@Localizer["Hurricane"]</option>
+                        <option value="Tornado">@Localizer["Tornado"]</option>
+                        <option value="Tsunami">@Localizer["Tsunami"]</option>
+                        <option value="Wildfire">@Localizer["Wildfire"]</option>
+                        <option value="Other">@Localizer["Other"]</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="severity" class="form-label fw-semibold">@Localizer["Severity"]</label>
+                    <select class="form-select" id="severity" name="severity">
+                        <option value="">@Localizer["AllSeverities"]</option>
+                        <option value="Low">@Localizer["Low"]</option>
+                        <option value="Moderate">@Localizer["Moderate"]</option>
+                        <option value="High">@Localizer["High"]</option>
+                        <option value="Critical">@Localizer["Critical"]</option>
+                        <option value="Catastrophic">@Localizer["Catastrophic"]</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="status" class="form-label fw-semibold">@Localizer["Status"]</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">@Localizer["AllStatuses"]</option>
+                        <option value="Pending">@Localizer["Pending"]</option>
+                        <option value="InProgress">@Localizer["InProgress"]</option>
+                        <option value="Resolved">@Localizer["Resolved"]</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter me-2"></i>@Localizer["Filter"]
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4 g-3">
+        <div class="col-md-4">
+            <a asp-action="Map" class="btn btn-info btn-lg w-100 d-flex align-items-center justify-content-center gap-2">
+                <i class="fas fa-map-marked-alt"></i>
+                <span>@Localizer["ViewMap"]</span>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-action="MyReports" class="btn btn-outline-secondary btn-lg w-100 d-flex align-items-center justify-content-center gap-2">
+                <i class="fas fa-file-alt"></i>
+                <span>My Reports</span>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-controller="Shelter" asp-action="Index" class="btn btn-success btn-lg w-100 d-flex align-items-center justify-content-center gap-2">
+                <i class="fas fa-home"></i>
+                <span>Find Shelter</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Incidents List -->
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var incident in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 incident-card border-@GetSeverityColor(incident.Severity)">
+                        <div class="card-header bg-@GetSeverityColor(incident.Severity) text-white">
+                            <h5 class="mb-0">
+                                <i class="fas @GetDisasterIcon(incident.DisasterType)"></i>
+                                @incident.DisasterType.ToString()
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title">@incident.Title</h6>
+                            <p class="card-text text-muted">@incident.Description</p>
+                            <hr />
+                            <div class="incident-details">
+                                <p class="mb-1">
+                                    <strong>Severity:</strong>
+                                    <span class="badge bg-@GetSeverityColor(incident.Severity)">@incident.Severity</span>
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Status:</strong>
+                                    <span class="badge bg-secondary">@incident.Status</span>
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Location:</strong> @incident.Address
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Reported:</strong> @incident.ReportedAt.ToString("MMM dd, yyyy HH:mm")
+                                </p>
+                                @if (incident.AffectedPeople > 0)
+                                {
+                                    <p class="mb-1 text-danger">
+                                        <strong>Affected People:</strong> @incident.AffectedPeople
+                                    </p>
+                                }
+                                @if (incident.IsVerified)
+                                {
+                                    <p class="mb-1 text-success">
+                                        <i class="fas fa-check-circle"></i> Verified
+                                    </p>
+                                }
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a asp-action="Details" asp-route-id="@incident.Id" class="btn btn-primary btn-sm w-100">
+                                <i class="fas fa-info-circle"></i> View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> No active incidents at this time. Stay safe!
+        </div>
+    }
+</div>
+
+@functions {
+    string GetSeverityColor(GlobalDisasterManagement.Models.IncidentSeverity severity)
+    {
+        return severity switch
+        {
+            GlobalDisasterManagement.Models.IncidentSeverity.Low => "success",
+            GlobalDisasterManagement.Models.IncidentSeverity.Moderate => "warning",
+            GlobalDisasterManagement.Models.IncidentSeverity.High => "danger",
+            GlobalDisasterManagement.Models.IncidentSeverity.Critical => "danger",
+            GlobalDisasterManagement.Models.IncidentSeverity.Catastrophic => "dark",
+            _ => "secondary"
+        };
+    }
+
+    string GetDisasterIcon(GlobalDisasterManagement.Models.DisasterType type)
+    {
+        return type switch
+        {
+            GlobalDisasterManagement.Models.DisasterType.Flood => "fa-water",
+            GlobalDisasterManagement.Models.DisasterType.Earthquake => "fa-house-damage",
+            GlobalDisasterManagement.Models.DisasterType.Fire => "fa-fire",
+            GlobalDisasterManagement.Models.DisasterType.Hurricane => "fa-wind",
+            GlobalDisasterManagement.Models.DisasterType.Tornado => "fa-tornado",
+            GlobalDisasterManagement.Models.DisasterType.Tsunami => "fa-water",
+            GlobalDisasterManagement.Models.DisasterType.Wildfire => "fa-fire-alt",
+            GlobalDisasterManagement.Models.DisasterType.VolcanicEruption => "fa-mountain",
+            _ => "fa-exclamation-triangle"
+        };
+    }
+}
+
+<style>
+    .incident-card {
+        transition: transform 0.2s;
+        border-width: 2px !important;
+    }
+
+    .incident-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .incident-details {
+        font-size: 0.9rem;
+    }
+</style>

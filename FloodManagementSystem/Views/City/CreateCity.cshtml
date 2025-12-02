@@ -1,0 +1,54 @@
+@model City
+@{
+    ViewData["Title"] = "Create New City";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    <h4 class="mb-0">
+                        <i class="fas fa-city me-2"></i>Create New City
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-controller="City" asp-action="CreateCity" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="mb-4">
+                            <label asp-for="Name" class="form-label fw-semibold">
+                                <i class="fas fa-city me-1"></i>City Name
+                            </label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter city name" required />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="LGAId" class="form-label fw-semibold">
+                                <i class="fas fa-map-marked-alt me-1"></i>Region / LGA
+                            </label>
+                            <select asp-for="LGAId" class="form-select" asp-items="@ViewBag.LGAs">
+                                <option value="" selected disabled>-- Select Region --</option>
+                            </select>
+                            <span asp-validation-for="LGAId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn text-white" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border: none;">
+                                <i class="fas fa-check me-1"></i>Create City
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

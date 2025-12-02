@@ -1,0 +1,213 @@
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<GlobalDisasterManagement.Resources.SharedResources> Localizer
+@model GlobalDisasterManagement.Models.DTO.RegistrationModel
+@{
+    ViewData["Title"] = Localizer["Register"];
+}
+
+<!-- Registration Page -->
+<section class="min-vh-100 d-flex align-items-center py-5" style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="card modern-card shadow-lg border-0">
+                    <div class="card-body p-4 p-md-5">
+                        <!-- Logo/Title Section -->
+                        <div class="text-center mb-4">
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                 style="width: 70px; height: 70px; background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);">
+                                <i class="fas fa-user-plus fa-2x text-white"></i>
+                            </div>
+                            <h2 class="fw-bold mb-2">@Localizer["RegisterForEarlyWarning"]</h2>
+                            <p class="text-muted mb-0">Create your account to receive disaster alerts and updates</p>
+                        </div>
+
+                        <!-- Validation Summary -->
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+
+                        <!-- Registration Form -->
+                        <form method="post" class="needs-validation" novalidate>
+                            <div class="row g-3">
+                                <!-- Personal Information Section -->
+                                <div class="col-12 mb-2">
+                                    <h5 class="fw-bold mb-0">
+                                        <i class="fas fa-user-circle me-2 text-primary"></i>Personal Information
+                                    </h5>
+                                    <hr class="mt-2 mb-3">
+                                </div>
+
+                                <!-- Name Field -->
+                                <div class="col-md-6">
+                                    <label asp-for="UserName" class="form-label fw-semibold">
+                                        <i class="fas fa-user me-2 text-primary"></i>Full Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="UserName" class="form-control" 
+                                           placeholder="Enter your full name" spellcheck="false" required />
+                                    <span asp-validation-for="UserName" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Email Field -->
+                                <div class="col-md-6">
+                                    <label asp-for="Email" class="form-label fw-semibold">
+                                        <i class="fas fa-envelope me-2 text-primary"></i>Email Address <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Email" class="form-control" type="email"
+                                           placeholder="your.email@example.com" spellcheck="false" required />
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Password Field -->
+                                <div class="col-md-6">
+                                    <label asp-for="Password" class="form-label fw-semibold">
+                                        <i class="fas fa-lock me-2 text-primary"></i>Password <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Password" class="form-control" type="password"
+                                           placeholder="Create a strong password" spellcheck="false" required />
+                                    <span asp-validation-for="Password" class="text-danger small"></span>
+                                    <small class="text-muted d-block mt-1">Minimum 8 characters</small>
+                                </div>
+
+                                <!-- Confirm Password Field -->
+                                <div class="col-md-6">
+                                    <label asp-for="PasswordConfirm" class="form-label fw-semibold">
+                                        <i class="fas fa-lock me-2 text-primary"></i>Confirm Password <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="PasswordConfirm" class="form-control" type="password"
+                                           placeholder="Re-enter your password" spellcheck="false" required />
+                                    <span asp-validation-for="PasswordConfirm" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Location Section Header -->
+                                <div class="col-12 mt-4 mb-2">
+                                    <h5 class="fw-bold mb-0">
+                                        <i class="fas fa-globe-americas me-2 text-primary"></i>Location Information
+                                    </h5>
+                                    <p class="text-muted small mb-2">Help us send you relevant disaster alerts for your area (optional)</p>
+                                    <hr class="mt-2 mb-3">
+                                </div>
+
+                                <!-- Country Field -->
+                                <div class="col-md-6">
+                                    <label for="country" class="form-label fw-semibold">
+                                        <i class="fas fa-flag me-2 text-primary"></i>Country
+                                    </label>
+                                    <select id="country" name="Country" class="form-select">
+                                        <option value="">-- Select Country --</option>
+                                        <option value="Nigeria">Nigeria</option>
+                                        <option value="Ghana">Ghana</option>
+                                        <option value="Kenya">Kenya</option>
+                                        <option value="South Africa">South Africa</option>
+                                        <option value="Egypt">Egypt</option>
+                                        <option value="Morocco">Morocco</option>
+                                        <option value="Ethiopia">Ethiopia</option>
+                                        <option value="Tanzania">Tanzania</option>
+                                        <option value="Uganda">Uganda</option>
+                                        <option value="Senegal">Senegal</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <!-- Region/State Field -->
+                                <div class="col-md-6">
+                                    <label asp-for="LGAId" class="form-label fw-semibold">
+                                        <i class="fas fa-map me-2 text-primary"></i>Region / State
+                                    </label>
+                                    <select asp-for="LGAId" id="lga" class="form-select" asp-items="@ViewBag.lgas">
+                                        <option value="">-- Select Region --</option>
+                                    </select>
+                                    <small class="text-muted d-block mt-1">Select your state or region</small>
+                                </div>
+
+                                <!-- City Field -->
+                                <div class="col-md-12">
+                                    <label asp-for="CityId" class="form-label fw-semibold">
+                                        <i class="fas fa-city me-2 text-primary"></i>City / Town
+                                    </label>
+                                    <select asp-for="CityId" id="city" class="form-select">
+                                        <option value="">-- Select City --</option>
+                                    </select>
+                                    <small class="text-muted d-block mt-1">Select a region first to see available cities</small>
+                                </div>
+
+                                <!-- Terms and Conditions -->
+                                <div class="col-12 mt-4">
+                                    <div class="form-check p-3 bg-light rounded">
+                                        <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                        <label class="form-check-label" for="termsCheck">
+                                            <strong>I agree to receive emergency alerts</strong> and important updates via SMS, email, and push notifications. <span class="text-danger">*</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="col-12 mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2">
+                                        <i class="fas fa-user-check"></i>
+                                        <span>Create Account</span>
+                                    </button>
+                                </div>
+
+                                <!-- Login Link -->
+                                <div class="col-12 text-center mt-3">
+                                    <span class="text-muted">Already have an account?</span>
+                                    <a href="/UserAuthentication/Login" class="text-primary text-decoration-none fw-semibold ms-1">
+                                        Login here
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Back to Home -->
+                        <hr class="my-4">
+                        <div class="text-center">
+                            <a href="/" class="text-muted text-decoration-none d-inline-flex align-items-center gap-2">
+                                <i class="fas fa-home"></i>
+                                <span>Back to Home</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Note -->
+                <div class="text-center mt-4">
+                    <p class="text-white small mb-0">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        Your information is secure and encrypted
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var lgaSelect = document.querySelector('#lga');
+            lgaSelect.addEventListener('change', function () {
+                var lgaId = this.value;
+                if (lgaId) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            var cities = JSON.parse(xhr.responseText);
+                            var items = '<option value="">-- Select City --</option>';
+                            cities.forEach(function (city) {
+                                items += '<option value="' + city.id + '">' + city.name + '</option>';
+                            });
+                            document.querySelector('#city').innerHTML = items;
+                        }
+                    };
+                    xhr.open('GET', '/UserAuthentication/GetCitiesByLGA?LGAId=' + encodeURIComponent(lgaId), true);
+                    xhr.send();
+                } else {
+                    document.querySelector('#city').innerHTML = '<option value="">-- Select City --</option>';
+                }
+            });
+        });
+    </script>
+}

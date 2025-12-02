@@ -1,0 +1,80 @@
+@model GlobalDisasterManagement.Models.User
+@{
+    ViewBag.Title = "Edit";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Update Account</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@*        @Html.HiddenFor(model => model.StudentId)
+*@
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group col-md-12 row text-white fw-semibold">
+            <label for="lga" class="col-md-6">LGA:</label>
+            <select asp-for="LGAId" id="lga" class="form-control col-md-6" asp-items="@ViewBag.lgas">
+                <option value="">-- Select LGA --</option>
+            </select>
+        </div>
+        <div class="form-group col-md-12 row text-white fw-semibold">
+            <label for="city" class="col-md-6">City:</label>
+            <select asp-for="CityId" id="city" class="form-control col-md-6" required>
+            </select>
+            <span asp-validation-for="CityId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var lgaSelect = document.querySelector('#lga');
+            lgaSelect.addEventListener('change', function () {
+                var lgaId = this.value;
+                if (lgaId) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            var cities = JSON.parse(xhr.responseText);
+                            var items = '<option value="">-- Select City --</option>';
+                            cities.forEach(function (city) {
+                                items += '<option value="' + city.id + '">' + city.name + '</option>';
+                            });
+                            document.querySelector('#city').innerHTML = items;
+                        }
+                    };
+                    xhr.open('GET', '/UserAuthentication/GetCitiesByLGA?LGAId=' + encodeURIComponent(lgaId), true);
+                    xhr.send();
+                } else {
+                    document.querySelector('#city').innerHTML = '';
+                }
+            });
+        });
+    </script>
+}

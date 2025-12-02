@@ -1,0 +1,34 @@
+@model List<GlobalDisasterManagement.Models.CityFloodPrediction>
+
+<h1>Flood Risk Predictions</h1>
+
+<p>Accuracy: @ViewData["Accuracy"]</p>
+
+<table class="text-dark">
+    <thead>
+        <tr>
+            <th>City</th>
+            <th>Year</th>
+            <th>Month</th>
+            <th>Prediction</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var prediction in Model)
+        {
+            <tr>
+                <td>@prediction.City</td>
+                <td>@prediction.Year</td>
+                <td>@prediction.Month</td>
+                @if (@prediction.Prediction == false.ToString())
+                {
+                    <td>Low Risk</td>
+                }
+                else
+                {
+                    <td>High Risk</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

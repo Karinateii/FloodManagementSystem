@@ -1,0 +1,138 @@
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Localization
+@using GlobalDisasterManagement.Resources
+@inject IStringLocalizer<SharedResources> Localizer
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var currentCulture = requestCulture?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+}
+
+<div class="dropdown">
+    <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.1);">
+        <i class="bi bi-translate me-1"></i>
+        <span class="current-lang">
+        @switch (currentCulture)
+        {
+            case "en": <text>English</text>; break;
+            case "fr": <text>Français</text>; break;
+            case "ar": <text>العربية</text>; break;
+            case "es": <text>Español</text>; break;
+            case "pt": <text>Português</text>; break;
+            case "ha": <text>Hausa</text>; break;
+            case "yo": <text>Yorùbá</text>; break;
+            case "ig": <text>Igbo</text>; break;
+            default: <text>English</text>; break;
+        }
+        </span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown" style="min-width: 200px;">
+        <li>
+            <form method="post" action="@Url.Action("SetLanguage", "Language")" style="margin: 0;">
+                <input type="hidden" name="culture" value="en" />
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <button type="submit" class="dropdown-item @(currentCulture == "en" ? "active" : "")" style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
+                    <span class="flag-icon">🇬🇧</span> English
+                </button>
+            </form>
+        </li>
+        <li>
+            <form method="post" action="@Url.Action("SetLanguage", "Language")" style="margin: 0;">
+                <input type="hidden" name="culture" value="fr" />
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <button type="submit" class="dropdown-item @(currentCulture == "fr" ? "active" : "")" style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
+                    <span class="flag-icon">🇫🇷</span> Français
+                </button>
+            </form>
+        </li>
+        <li>
+            <form method="post" action="@Url.Action("SetLanguage", "Language")" style="margin: 0;">
+                <input type="hidden" name="culture" value="ar" />
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <button type="submit" class="dropdown-item @(currentCulture == "ar" ? "active" : "")" style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;" dir="rtl">
+                    <span class="flag-icon">🇸🇦</span> العربية
+                </button>
+            </form>
+        </li>
+        <li>
+            <form method="post" action="@Url.Action("SetLanguage", "Language")" style="margin: 0;">
+                <input type="hidden" name="culture" value="es" />
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <button type="submit" class="dropdown-item @(currentCulture == "es" ? "active" : "")" style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
+                    <span class="flag-icon">🇪🇸</span> Español
+                </button>
+            </form>
+        </li>
+        <li>
+            <form method="post" action="@Url.Action("SetLanguage", "Language")" style="margin: 0;">
+                <input type="hidden" name="culture" value="pt" />
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <button type="submit" class="dropdown-item @(currentCulture == "pt" ? "active" : "")" style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
+                    <span class="flag-icon">🇵🇹</span> Português
+                </button>
+            </form>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">African Languages</li>
+        <li>
+            <form method="post" action="@Url.Action("SetLanguage", "Language")" style="margin: 0;">
+                <input type="hidden" name="culture" value="ha" />
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <button type="submit" class="dropdown-item @(currentCulture == "ha" ? "active" : "")" style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
+                    <span class="flag-icon">🇳🇬</span> Hausa
+                </button>
+            </form>
+        </li>
+        <li>
+            <form method="post" action="@Url.Action("SetLanguage", "Language")" style="margin: 0;">
+                <input type="hidden" name="culture" value="yo" />
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <button type="submit" class="dropdown-item @(currentCulture == "yo" ? "active" : "")" style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
+                    <span class="flag-icon">🇳🇬</span> Yorùbá
+                </button>
+            </form>
+        </li>
+        <li>
+            <form method="post" action="@Url.Action("SetLanguage", "Language")" style="margin: 0;">
+                <input type="hidden" name="culture" value="ig" />
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <button type="submit" class="dropdown-item @(currentCulture == "ig" ? "active" : "")" style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
+                    <span class="flag-icon">🇳🇬</span> Igbo
+                </button>
+            </form>
+        </li>
+    </ul>
+</div>
+</div>
+
+<style>
+    .flag-icon {
+        font-size: 1.2em;
+        margin-right: 0.5rem;
+    }
+    
+    .dropdown-item.active {
+        background-color: #0d6efd;
+        color: white;
+    }
+    
+    /* RTL support for Arabic */
+    [dir="rtl"] {
+        text-align: right;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add loading indicator when language is changed
+    const languageForms = document.querySelectorAll('.dropdown-menu form');
+    languageForms.forEach(form => {
+        form.addEventListener('submit', function() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.innerHTML = '<i class="spinner-border spinner-border-sm me-1"></i> Changing...';
+            dropdown.disabled = true;
+        });
+    });
+});
+</script>

@@ -1,0 +1,366 @@
+@model IEnumerable<GlobalDisasterManagement.Models.EmergencyShelter>
+@using Microsoft.Extensions.Localization
+@using GlobalDisasterManagement.Resources
+@inject IStringLocalizer<SharedResources> Localizer
+
+@{
+    ViewData["Title"] = Localizer["EmergencyShelters"];
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-home"></i> @Localizer["EmergencyShelters"]</h2>
+        @if (User.IsInRole("admin"))
+        {
+            <a asp-action="Create" class="btn btn-primary"><i class="fas fa-plus"></i> @Localizer["AddShelter"]</a>
+        }
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Search and Filter Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5><i class="fas fa-filter"></i> Search & Filter Shelters</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" asp-action="Index">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Search</label>
+                        <input type="text" name="searchTerm" class="form-control" 
+                               value="@ViewBag.SearchTerm" placeholder="Name or address...">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">City</label>
+                        <select name="cityFilter" class="form-select" asp-items="ViewBag.Cities">
+                            <option value="">All Cities</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">LGA</label>
+                        <select name="lgaFilter" class="form-select" asp-items="ViewBag.LGAs">
+                            <option value="">All LGAs</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Status</label>
+                        <select name="statusFilter" class="form-select">
+                            <option value="">All</option>
+                            <option value="active" selected="@(ViewBag.StatusFilter == "active")">Active</option>
+                            <option value="inactive" selected="@(ViewBag.StatusFilter == "inactive")">Inactive</option>
+                            <option value="operational" selected="@(ViewBag.StatusFilter == "operational")">Operational</option>
+                            <option value="available" selected="@(ViewBag.StatusFilter == "available")">Has Space</option>
+                            <option value="full" selected="@(ViewBag.StatusFilter == "full")">Full</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-search"></i> Filter
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Summary -->
+    <div class="mb-3">
+        <p class="text-muted">
+            Showing @Model.Count() of @ViewBag.TotalItems shelters 
+            (Page @ViewBag.CurrentPage of @ViewBag.TotalPages)
+        </p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <a asp-action="FindNearby" class="btn btn-success btn-lg w-100">
+                <i class="fas fa-search-location"></i> @Localizer["FindNearbyShelter"]
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-action="Map" class="btn btn-info btn-lg w-100">
+                <i class="fas fa-map-marked-alt"></i> @Localizer["ViewMap"]
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-controller="Incident" asp-action="Index" class="btn btn-warning btn-lg w-100">
+                <i class="fas fa-exclamation-triangle"></i> @Localizer["ActiveIncidents"]
+            </a>
+        </div>
+    </div>
+
+    <!-- Capacity Overview -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5>@Localizer["SystemCapacityOverview"]</h5>
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <h3 class="text-primary">@Model.Count()</h3>
+                            <p>@Localizer["ActiveShelters"]</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-success">@Model.Sum(s => s.TotalCapacity)</h3>
+                            <p>@Localizer["TotalCapacity"]</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-warning">@Model.Sum(s => s.CurrentOccupancy)</h3>
+                            <p>@Localizer["CurrentOccupancy"]</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-info">@(Model.Sum(s => s.TotalCapacity) - Model.Sum(s => s.CurrentOccupancy))</h3>
+                            <p>@Localizer["AvailableSpaces"]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shelters List -->
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var shelter in Model.OrderByDescending(s => s.AvailableSpaces))
+            {
+                var occupancyPercentage = shelter.TotalCapacity > 0 
+                    ? (double)shelter.CurrentOccupancy / shelter.TotalCapacity * 100 
+                    : 0;
+                var capacityClass = occupancyPercentage >= 90 ? "danger" : occupancyPercentage >= 70 ? "warning" : "success";
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shelter-card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas @GetShelterIcon(shelter.Type)"></i>
+                                @shelter.Type.ToString()
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title">@shelter.Name</h6>
+                            <p class="card-text text-muted">
+                                <i class="fas fa-map-marker-alt"></i> @shelter.Address
+                            </p>
+
+                            <!-- Capacity Progress Bar -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <small>Capacity</small>
+                                    <small><strong>@shelter.CurrentOccupancy / @shelter.TotalCapacity</strong></small>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-@capacityClass" role="progressbar" 
+                                         style="width: @occupancyPercentage%" 
+                                         aria-valuenow="@occupancyPercentage" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                        @occupancyPercentage.ToString("0")%
+                                    </div>
+                                </div>
+                                <small class="text-@capacityClass">
+                                    <strong>@shelter.AvailableSpaces spaces available</strong>
+                                </small>
+                            </div>
+
+                            <hr />
+
+                            <!-- Facilities -->
+                            <div class="shelter-facilities">
+                                @if (shelter.HasMedicalFacility)
+                                {
+                                    <span class="badge bg-success me-1"><i class="fas fa-medkit"></i> Medical</span>
+                                }
+                                @if (shelter.HasFood)
+                                {
+                                    <span class="badge bg-warning me-1"><i class="fas fa-utensils"></i> Food</span>
+                                }
+                                @if (shelter.HasWater)
+                                {
+                                    <span class="badge bg-info me-1"><i class="fas fa-tint"></i> Water</span>
+                                }
+                                @if (shelter.HasPower)
+                                {
+                                    <span class="badge bg-danger me-1"><i class="fas fa-bolt"></i> Power</span>
+                                }
+                                @if (shelter.IsAccessible)
+                                {
+                                    <span class="badge bg-primary me-1"><i class="fas fa-wheelchair"></i> Accessible</span>
+                                }
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(shelter.ContactPhone))
+                            {
+                                <p class="mt-2 mb-1"><small><i class="fas fa-phone"></i> @shelter.ContactPhone</small></p>
+                            }
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-grid gap-2">
+                                <a asp-action="Details" asp-route-id="@shelter.Id" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-info-circle"></i> View Details
+                                </a>
+                                @if (shelter.AvailableSpaces > 0)
+                                {
+                                    <a asp-action="CheckIn" asp-route-shelterId="@shelter.Id" class="btn btn-success btn-sm">
+                                        <i class="fas fa-sign-in-alt"></i> Check In
+                                    </a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-secondary btn-sm" disabled>
+                                        <i class="fas fa-ban"></i> At Capacity
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> No active shelters available at this time.
+        </div>
+    }
+
+    <!-- Pagination -->
+    @if (ViewBag.TotalPages > 1)
+    {
+        <nav aria-label="Shelter pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <!-- Previous -->
+                <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" 
+                       asp-action="Index" 
+                       asp-route-page="@(ViewBag.CurrentPage - 1)"
+                       asp-route-searchTerm="@ViewBag.SearchTerm"
+                       asp-route-cityFilter="@ViewBag.CityFilter"
+                       asp-route-lgaFilter="@ViewBag.LGAFilter"
+                       asp-route-statusFilter="@ViewBag.StatusFilter">
+                        Previous
+                    </a>
+                </li>
+
+                <!-- Page Numbers -->
+                @{
+                    var startPage = Math.Max(1, ViewBag.CurrentPage - 2);
+                    var endPage = Math.Min((int)ViewBag.TotalPages, ViewBag.CurrentPage + 2);
+                }
+
+                @if (startPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" 
+                           asp-action="Index" 
+                           asp-route-page="1"
+                           asp-route-searchTerm="@ViewBag.SearchTerm"
+                           asp-route-cityFilter="@ViewBag.CityFilter"
+                           asp-route-lgaFilter="@ViewBag.LGAFilter"
+                           asp-route-statusFilter="@ViewBag.StatusFilter">
+                            1
+                        </a>
+                    </li>
+                    @if (startPage > 2)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                }
+
+                @for (var i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" 
+                           asp-action="Index" 
+                           asp-route-page="@i"
+                           asp-route-searchTerm="@ViewBag.SearchTerm"
+                           asp-route-cityFilter="@ViewBag.CityFilter"
+                           asp-route-lgaFilter="@ViewBag.LGAFilter"
+                           asp-route-statusFilter="@ViewBag.StatusFilter">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                @if (endPage < ViewBag.TotalPages)
+                {
+                    @if (endPage < ViewBag.TotalPages - 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link" 
+                           asp-action="Index" 
+                           asp-route-page="@ViewBag.TotalPages"
+                           asp-route-searchTerm="@ViewBag.SearchTerm"
+                           asp-route-cityFilter="@ViewBag.CityFilter"
+                           asp-route-lgaFilter="@ViewBag.LGAFilter"
+                           asp-route-statusFilter="@ViewBag.StatusFilter">
+                            @ViewBag.TotalPages
+                        </a>
+                    </li>
+                }
+
+                <!-- Next -->
+                <li class="page-item @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")">
+                    <a class="page-link" 
+                       asp-action="Index" 
+                       asp-route-page="@(ViewBag.CurrentPage + 1)"
+                       asp-route-searchTerm="@ViewBag.SearchTerm"
+                       asp-route-cityFilter="@ViewBag.CityFilter"
+                       asp-route-lgaFilter="@ViewBag.LGAFilter"
+                       asp-route-statusFilter="@ViewBag.StatusFilter">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
+
+@functions {
+    string GetShelterIcon(GlobalDisasterManagement.Models.ShelterType type)
+    {
+        return type switch
+        {
+            GlobalDisasterManagement.Models.ShelterType.School => "fa-school",
+            GlobalDisasterManagement.Models.ShelterType.CommunityCenter => "fa-building",
+            GlobalDisasterManagement.Models.ShelterType.Stadium => "fa-futbol",
+            GlobalDisasterManagement.Models.ShelterType.Church => "fa-church",
+            GlobalDisasterManagement.Models.ShelterType.Mosque => "fa-mosque",
+            GlobalDisasterManagement.Models.ShelterType.Government => "fa-landmark",
+            GlobalDisasterManagement.Models.ShelterType.Hotel => "fa-hotel",
+            GlobalDisasterManagement.Models.ShelterType.Military => "fa-shield-alt",
+            GlobalDisasterManagement.Models.ShelterType.Hospital => "fa-hospital",
+            GlobalDisasterManagement.Models.ShelterType.Other => "fa-home",
+            _ => "fa-home"
+        };
+    }
+}
+
+<style>
+    .shelter-card {
+        transition: transform 0.2s;
+    }
+
+    .shelter-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .shelter-facilities {
+        font-size: 0.85rem;
+    }
+</style>

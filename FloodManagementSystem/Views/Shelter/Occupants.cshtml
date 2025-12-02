@@ -1,0 +1,379 @@
+@model IEnumerable<GlobalDisasterManagement.Models.ShelterCheckIn>
+
+@{
+    ViewData["Title"] = "Shelter Occupants";
+    var shelter = ViewBag.Shelter as GlobalDisasterManagement.Models.EmergencyShelter;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="fas fa-users"></i> Shelter Occupants</h2>
+            @if (shelter != null)
+            {
+                <p class="text-muted">@shelter.Name</p>
+            }
+        </div>
+        <a asp-action="Details" asp-route-id="@shelter?.Id" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Shelter Details
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (shelter != null)
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Capacity Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h3 class="text-primary">@shelter.TotalCapacity</h3>
+                        <p class="text-muted">Total Capacity</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="text-warning">@shelter.CurrentOccupancy</h3>
+                        <p class="text-muted">Current Occupancy</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="text-success">@(shelter.TotalCapacity - shelter.CurrentOccupancy)</h3>
+                        <p class="text-muted">Available Spaces</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="text-info">@Model.Count()</h3>
+                        <p class="text-muted">Active Check-Ins</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> No occupants currently checked in to this shelter.
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Current Occupants</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Family Members</th>
+                                <th>Check-In Time</th>
+                                <th>Medical Needs</th>
+                                <th>Special Assistance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var occupant in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@occupant.FullName</strong>
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(occupant.PhoneNumber))
+                                        {
+                                            <a href="tel:@occupant.PhoneNumber">@occupant.PhoneNumber</a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">N/A</span>
+                                        }
+                                    </td>
+                                    <td>@occupant.Age</td>
+                                    <td>
+                                        @switch (occupant.Gender)
+                                        {
+                                            case GlobalDisasterManagement.Models.Gender.Male:
+                                                <span><i class="fas fa-male"></i> Male</span>
+                                                break;
+                                            case GlobalDisasterManagement.Models.Gender.Female:
+                                                <span><i class="fas fa-female"></i> Female</span>
+                                                break;
+                                            case GlobalDisasterManagement.Models.Gender.Other:
+                                                <span><i class="fas fa-user"></i> Other</span>
+                                                break;
+                                            default:
+                                                <span class="text-muted">Not Specified</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">@occupant.FamilyMembers</span>
+                                    </td>
+                                    <td>
+                                        @occupant.CheckInTime.ToLocalTime().ToString("MMM dd, yyyy HH:mm")
+                                        <br />
+                                        <small class="text-muted">
+                                            @{
+                                                var duration = DateTime.UtcNow - occupant.CheckInTime;
+                                                if (duration.TotalDays >= 1)
+                                                {
+                                                    <span>(@((int)duration.TotalDays) days ago)</span>
+                                                }
+                                                else if (duration.TotalHours >= 1)
+                                                {
+                                                    <span>(@((int)duration.TotalHours) hours ago)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>(@((int)duration.TotalMinutes) minutes ago)</span>
+                                                }
+                                            }
+                                        </small>
+                                    </td>
+                                    <td>
+                                        @if (occupant.HasMedicalNeeds)
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-medkit"></i> Yes
+                                            </span>
+                                            @if (!string.IsNullOrEmpty(occupant.MedicalConditions))
+                                            {
+                                                <br />
+                                                <small class="text-muted" title="@occupant.MedicalConditions">
+                                                    @(occupant.MedicalConditions.Length > 30 ? occupant.MedicalConditions.Substring(0, 30) + "..." : occupant.MedicalConditions)
+                                                </small>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">No</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (occupant.NeedsSpecialAssistance)
+                                        {
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-wheelchair"></i> Yes
+                                            </span>
+                                            @if (!string.IsNullOrEmpty(occupant.SpecialRequirements))
+                                            {
+                                                <br />
+                                                <small class="text-muted" title="@occupant.SpecialRequirements">
+                                                    @(occupant.SpecialRequirements.Length > 30 ? occupant.SpecialRequirements.Substring(0, 30) + "..." : occupant.SpecialRequirements)
+                                                </small>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">No</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#detailsModal@(occupant.Id)">
+                                            <i class="fas fa-eye"></i> View
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Detail Modals -->
+@foreach (var occupant in Model)
+{
+    <div class="modal fade" id="detailsModal@(occupant.Id)" tabindex="-1" aria-labelledby="detailsModalLabel@(occupant.Id)" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="detailsModalLabel@(occupant.Id)">
+                        <i class="fas fa-user"></i> Occupant Details
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Personal Information</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="40%">Full Name:</th>
+                                    <td>@occupant.FullName</td>
+                                </tr>
+                                <tr>
+                                    <th>Phone Number:</th>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(occupant.PhoneNumber))
+                                        {
+                                            <a href="tel:@occupant.PhoneNumber">@occupant.PhoneNumber</a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Not provided</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Age:</th>
+                                    <td>@occupant.Age years</td>
+                                </tr>
+                                <tr>
+                                    <th>Gender:</th>
+                                    <td>@occupant.Gender.ToString()</td>
+                                </tr>
+                                <tr>
+                                    <th>Family Members:</th>
+                                    <td>@occupant.FamilyMembers person(s)</td>
+                                </tr>
+                            </table>
+
+                            <h6 class="text-primary mt-3">Check-In Information</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="40%">Check-In Time:</th>
+                                    <td>@occupant.CheckInTime.ToLocalTime().ToString("MMMM dd, yyyy HH:mm")</td>
+                                </tr>
+                                <tr>
+                                    <th>Duration:</th>
+                                    <td>
+                                        @{
+                                            var duration = DateTime.UtcNow - occupant.CheckInTime;
+                                            if (duration.TotalDays >= 1)
+                                            {
+                                                <span>@((int)duration.TotalDays) days</span>
+                                            }
+                                            else if (duration.TotalHours >= 1)
+                                            {
+                                                <span>@((int)duration.TotalHours) hours</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@((int)duration.TotalMinutes) minutes</span>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Medical Information</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="40%">Has Medical Needs:</th>
+                                    <td>
+                                        @if (occupant.HasMedicalNeeds)
+                                        {
+                                            <span class="badge bg-danger">Yes</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">No</span>
+                                        }
+                                    </td>
+                                </tr>
+                                @if (occupant.HasMedicalNeeds && !string.IsNullOrEmpty(occupant.MedicalConditions))
+                                {
+                                    <tr>
+                                        <th>Medical Conditions:</th>
+                                        <td>@occupant.MedicalConditions</td>
+                                    </tr>
+                                }
+                            </table>
+
+                            <h6 class="text-primary mt-3">Special Assistance</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="40%">Needs Assistance:</th>
+                                    <td>
+                                        @if (occupant.NeedsSpecialAssistance)
+                                        {
+                                            <span class="badge bg-warning">Yes</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">No</span>
+                                        }
+                                    </td>
+                                </tr>
+                                @if (occupant.NeedsSpecialAssistance && !string.IsNullOrEmpty(occupant.SpecialRequirements))
+                                {
+                                    <tr>
+                                        <th>Requirements:</th>
+                                        <td>@occupant.SpecialRequirements</td>
+                                    </tr>
+                                }
+                            </table>
+
+                            @if (!string.IsNullOrEmpty(occupant.EmergencyContactName) || !string.IsNullOrEmpty(occupant.EmergencyContactPhone))
+                            {
+                                <h6 class="text-primary mt-3">Emergency Contact</h6>
+                                <table class="table table-sm">
+                                    @if (!string.IsNullOrEmpty(occupant.EmergencyContactName))
+                                    {
+                                        <tr>
+                                            <th width="40%">Name:</th>
+                                            <td>@occupant.EmergencyContactName</td>
+                                        </tr>
+                                    }
+                                    @if (!string.IsNullOrEmpty(occupant.EmergencyContactPhone))
+                                    {
+                                        <tr>
+                                            <th>Phone:</th>
+                                            <td><a href="tel:@occupant.EmergencyContactPhone">@occupant.EmergencyContactPhone</a></td>
+                                        </tr>
+                                    }
+                                </table>
+                            }
+
+                            @if (!string.IsNullOrEmpty(occupant.EvacuatedFromAddress))
+                            {
+                                <h6 class="text-primary mt-3">Origin</h6>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th width="40%">Evacuated From:</th>
+                                        <td>@occupant.EvacuatedFromAddress</td>
+                                    </tr>
+                                </table>
+                            }
+
+                            @if (!string.IsNullOrEmpty(occupant.Notes))
+                            {
+                                <h6 class="text-primary mt-3">Additional Notes</h6>
+                                <p>@occupant.Notes</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

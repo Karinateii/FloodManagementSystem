@@ -1,0 +1,415 @@
+@model List<GlobalDisasterManagement.Models.IoTSensor>
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<GlobalDisasterManagement.Resources.SharedResources> Localizer
+
+@{
+    ViewData["Title"] = Localizer["IoT Monitoring Dashboard"];
+    var healthReport = ViewBag.HealthReport as Dictionary<string, object>;
+    var criticalSensors = ViewBag.CriticalSensors as List<GlobalDisasterManagement.Models.WaterLevelSensor>;
+    
+    var waterLevelSensors = Model?.OfType<GlobalDisasterManagement.Models.WaterLevelSensor>().ToList() ?? new List<GlobalDisasterManagement.Models.WaterLevelSensor>();
+    var rainfallSensors = Model?.OfType<GlobalDisasterManagement.Models.RainfallSensor>().ToList() ?? new List<GlobalDisasterManagement.Models.RainfallSensor>();
+    var weatherSensors = Model?.OfType<GlobalDisasterManagement.Models.WeatherSensor>().ToList() ?? new List<GlobalDisasterManagement.Models.WeatherSensor>();
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4 mb-2">
+                <i class="fas fa-satellite-dish text-primary"></i>
+                @Localizer["IoT Monitoring Dashboard"]
+            </h1>
+            <p class="text-muted">@Localizer["Real-time monitoring of IoT sensors across all locations"]</p>
+        </div>
+    </div>
+
+    <!-- Alert Banner for Critical Sensors -->
+    @if (criticalSensors != null && criticalSensors.Any())
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <h5 class="alert-heading">
+                <i class="fas fa-exclamation-triangle"></i>
+                @Localizer["Critical Alert"] - @criticalSensors.Count @Localizer["sensors reporting dangerous levels"]
+            </h5>
+            <hr>
+            <ul class="mb-0">
+                @foreach (var sensor in criticalSensors.Take(5))
+                {
+                    <li>
+                        <strong>@sensor.Name</strong> (@sensor.Address): 
+                        <span class="badge bg-danger">@sensor.CurrentStatus</span> - 
+                        @sensor.CurrentLevel?.ToString("F2")m
+                    </li>
+                }
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <!-- Total Sensors -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="text-muted mb-1">@Localizer["Total Sensors"]</h6>
+                            <h2 class="mb-0" id="totalSensors">@(Model?.Count ?? 0)</h2>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 rounded p-3">
+                            <i class="fas fa-satellite-dish fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Water Level Sensors -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="text-muted mb-1">@Localizer["Water Level"]</h6>
+                            <h2 class="mb-0" id="waterLevelCount">@waterLevelSensors.Count</h2>
+                            <small class="text-success">
+                                <span id="waterLevelActive">@waterLevelSensors.Count(s => s.Status == GlobalDisasterManagement.Models.SensorStatus.Active)</span> active
+                            </small>
+                        </div>
+                        <div class="bg-info bg-opacity-10 rounded p-3">
+                            <i class="fas fa-water fa-2x text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rainfall Sensors -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="text-muted mb-1">@Localizer["Rainfall"]</h6>
+                            <h2 class="mb-0" id="rainfallCount">@rainfallSensors.Count</h2>
+                            <small class="text-success">
+                                <span id="rainfallActive">@rainfallSensors.Count(s => s.Status == GlobalDisasterManagement.Models.SensorStatus.Active)</span> active
+                            </small>
+                        </div>
+                        <div class="bg-success bg-opacity-10 rounded p-3">
+                            <i class="fas fa-cloud-rain fa-2x text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weather Sensors -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="text-muted mb-1">@Localizer["Weather"]</h6>
+                            <h2 class="mb-0" id="weatherCount">@weatherSensors.Count</h2>
+                            <small class="text-success">
+                                <span id="weatherActive">@weatherSensors.Count(s => s.Status == GlobalDisasterManagement.Models.SensorStatus.Active)</span> active
+                            </small>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 rounded p-3">
+                            <i class="fas fa-cloud-sun fa-2x text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <a href="@Url.Action("WaterLevel", "IoTMonitoring")" class="card border-0 shadow-sm text-decoration-none">
+                <div class="card-body">
+                    <h5 class="card-title text-info">
+                        <i class="fas fa-water"></i> @Localizer["Water Level Monitoring"]
+                    </h5>
+                    <p class="card-text text-muted">@Localizer["Monitor water levels in rivers, dams, and water bodies"]</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="@Url.Action("Rainfall", "IoTMonitoring")" class="card border-0 shadow-sm text-decoration-none">
+                <div class="card-body">
+                    <h5 class="card-title text-success">
+                        <i class="fas fa-cloud-rain"></i> @Localizer["Rainfall Monitoring"]
+                    </h5>
+                    <p class="card-text text-muted">@Localizer["Track precipitation patterns and rainfall intensity"]</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="@Url.Action("Weather", "IoTMonitoring")" class="card border-0 shadow-sm text-decoration-none">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">
+                        <i class="fas fa-cloud-sun"></i> @Localizer["Weather Monitoring"]
+                    </h5>
+                    <p class="card-text text-muted">@Localizer["Comprehensive weather station data and forecasts"]</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Real-Time Sensor Map -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-map-marked-alt text-primary"></i>
+                        @Localizer["Sensor Locations Map"]
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="sensorMap" style="height: 500px; background: #f8f9fa; border-radius: 8px;">
+                        <div class="d-flex align-items-center justify-content-center h-100">
+                            <div class="text-center">
+                                <i class="fas fa-map fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">@Localizer["Interactive sensor map will be displayed here"]</p>
+                                <small class="text-muted">@Localizer["Integrate with mapping service (Google Maps, OpenStreetMap, etc.)"]</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Sensor Updates -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clock text-primary"></i>
+                        @Localizer["Recent Sensor Updates"]
+                    </h5>
+                    <span class="badge bg-success">
+                        <i class="fas fa-circle fa-xs"></i> @Localizer["Live"]
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div id="recentUpdates" class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>@Localizer["Sensor"]</th>
+                                    <th>@Localizer["Type"]</th>
+                                    <th>@Localizer["Location"]</th>
+                                    <th>@Localizer["Status"]</th>
+                                    <th>@Localizer["Last Update"]</th>
+                                    <th>@Localizer["Actions"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var sensor in Model.OrderByDescending(s => s.LastDataReceivedDate).Take(10))
+                                    {
+                                        var statusClass = sensor.Status switch
+                                        {
+                                            GlobalDisasterManagement.Models.SensorStatus.Active => "success",
+                                            GlobalDisasterManagement.Models.SensorStatus.Inactive => "secondary",
+                                            GlobalDisasterManagement.Models.SensorStatus.Maintenance => "warning",
+                                            GlobalDisasterManagement.Models.SensorStatus.Faulty => "danger",
+                                            _ => "secondary"
+                                        };
+
+                                        <tr>
+                                            <td>
+                                                <strong>@sensor.Name</strong><br>
+                                                <small class="text-muted">@sensor.DeviceId</small>
+                                            </td>
+                                            <td>
+                                                @if (sensor is GlobalDisasterManagement.Models.WaterLevelSensor)
+                                                {
+                                                    <span class="badge bg-info">
+                                                        <i class="fas fa-water"></i> @Localizer["Water Level"]
+                                                    </span>
+                                                }
+                                                else if (sensor is GlobalDisasterManagement.Models.RainfallSensor)
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="fas fa-cloud-rain"></i> @Localizer["Rainfall"]
+                                                    </span>
+                                                }
+                                                else if (sensor is GlobalDisasterManagement.Models.WeatherSensor)
+                                                {
+                                                    <span class="badge bg-warning">
+                                                        <i class="fas fa-cloud-sun"></i> @Localizer["Weather"]
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @sensor.Address<br>
+                                                <small class="text-muted">@sensor.Latitude.ToString("F4"), @sensor.Longitude.ToString("F4")</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-@statusClass">@sensor.Status</span>
+                                            </td>
+                                            <td>
+                                                @if (sensor.LastDataReceivedDate.HasValue)
+                                                {
+                                                    var timeAgo = DateTime.UtcNow - sensor.LastDataReceivedDate.Value;
+                                                    @if (timeAgo.TotalMinutes < 60)
+                                                    {
+                                                        <span>@((int)timeAgo.TotalMinutes)m ago</span>
+                                                    }
+                                                    else if (timeAgo.TotalHours < 24)
+                                                    {
+                                                        <span>@((int)timeAgo.TotalHours)h ago</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@sensor.LastDataReceivedDate.Value.ToString("MMM dd, HH:mm")</span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">@Localizer["Never"]</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("SensorDetails", "IoTMonitoring", new { id = sensor.Id })" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i> @Localizer["View"]
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            <i class="fas fa-info-circle"></i> @Localizer["No sensors registered yet"]
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@7.0.0/dist/browser/signalr.min.js"></script>
+    <script>
+        // SignalR Connection for Real-Time Updates
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/iotMonitoringHub")
+            .withAutomaticReconnect()
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        // Subscribe to all sensors
+        connection.on("WaterLevelUpdate", function (data) {
+            console.log("Water Level Update:", data);
+            updateSensorRow(data);
+            showNotification("Water Level Alert", `${data.SensorName}: ${data.Reading.Level}m - ${data.Reading.Status}`);
+        });
+
+        connection.on("RainfallUpdate", function (data) {
+            console.log("Rainfall Update:", data);
+            updateSensorRow(data);
+            if (data.Reading.Intensity === "Heavy" || data.Reading.Intensity === "VeryHeavy") {
+                showNotification("Heavy Rainfall", `${data.SensorName}: ${data.Reading.Rainfall}mm - ${data.Reading.Intensity}`);
+            }
+        });
+
+        connection.on("WeatherUpdate", function (data) {
+            console.log("Weather Update:", data);
+            updateSensorRow(data);
+        });
+
+        connection.on("SensorStatusChanged", function (data) {
+            console.log("Sensor Status Changed:", data);
+            showNotification("Sensor Status", `Sensor ${data.DeviceId} changed from ${data.OldStatus} to ${data.NewStatus}`);
+        });
+
+        connection.on("DisasterAlert", function (data) {
+            console.log("Disaster Alert:", data);
+            showCriticalAlert(data);
+        });
+
+        // Start connection
+        connection.start()
+            .then(function () {
+                console.log("SignalR Connected");
+                connection.invoke("SubscribeToAllSensors")
+                    .catch(function (err) {
+                        console.error("Error subscribing to sensors:", err);
+                    });
+            })
+            .catch(function (err) {
+                console.error("SignalR Connection Error:", err);
+            });
+
+        // Heartbeat
+        setInterval(function () {
+            if (connection.state === signalR.HubConnectionState.Connected) {
+                connection.invoke("Ping").catch(function (err) {
+                    console.error("Ping error:", err);
+                });
+            }
+        }, 30000); // Every 30 seconds
+
+        // Update sensor row in table
+        function updateSensorRow(data) {
+            // Update logic for real-time table updates
+            // This is a placeholder - implement based on your needs
+        }
+
+        // Show notification
+        function showNotification(title, message) {
+            // Check if browser supports notifications
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, {
+                    body: message,
+                    icon: "/images/logo.png"
+                });
+            }
+        }
+
+        // Show critical alert
+        function showCriticalAlert(data) {
+            const alertHtml = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        ${data.Title}
+                    </h5>
+                    <p>${data.Message}</p>
+                    <small class="text-muted">${new Date(data.IssuedAt).toLocaleString()}</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            $(".container-fluid").prepend(alertHtml);
+        }
+
+        // Request notification permission on load
+        if ("Notification" in window && Notification.permission === "default") {
+            Notification.requestPermission();
+        }
+
+        // Refresh stats periodically
+        setInterval(function () {
+            // Optionally reload statistics without full page refresh
+            // $.get("/IoTMonitoring/GetStats", function(data) { ... });
+        }, 60000); // Every minute
+    </script>
+}

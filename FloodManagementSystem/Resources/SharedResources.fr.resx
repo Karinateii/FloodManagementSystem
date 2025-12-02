@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Common UI Strings -->
+  <data name="AppName" xml:space="preserve">
+    <value>Système Mondial de Gestion des Catastrophes</value>
+  </data>
+  <data name="AppNameShort" xml:space="preserve">
+    <value>SMGC</value>
+  </data>
+  
+  <!-- Navigation -->
+  <data name="Home" xml:space="preserve">
+    <value>Accueil</value>
+  </data>
+  <data name="Tips" xml:space="preserve">
+    <value>Conseils</value>
+  </data>
+  <data name="WhatToDoDisaster" xml:space="preserve">
+    <value>Que faire en cas de catastrophe</value>
+  </data>
+  <data name="PlanningAhead" xml:space="preserve">
+    <value>Planification préalable</value>
+  </data>
+  <data name="ReportDisaster" xml:space="preserve">
+    <value>Signaler une catastrophe</value>
+  </data>
+  <data name="DisasterRisks" xml:space="preserve">
+    <value>Risques de catastrophe</value>
+  </data>
+  <data name="EmergencyResponse" xml:space="preserve">
+    <value>Réponse d'urgence</value>
+  </data>
+  <data name="ActiveIncidents" xml:space="preserve">
+    <value>Incidents actifs</value>
+  </data>
+  <data name="ReportIncident" xml:space="preserve">
+    <value>Signaler un incident</value>
+  </data>
+  <data name="IncidentsMap" xml:space="preserve">
+    <value>Carte des incidents</value>
+  </data>
+  <data name="EmergencyShelters" xml:space="preserve">
+    <value>Abris d'urgence</value>
+  </data>
+  <data name="FindNearbyShelter" xml:space="preserve">
+    <value>Trouver un abri à proximité</value>
+  </data>
+  <data name="SheltersMap" xml:space="preserve">
+    <value>Carte des abris</value>
+  </data>
+  <data name="IoTMonitoring" xml:space="preserve">
+    <value>Surveillance IoT</value>
+  </data>
+  <data name="Analytics" xml:space="preserve">
+    <value>Analytique</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Tableau de bord</value>
+  </data>
+  <data name="Incidents" xml:space="preserve">
+    <value>Incidents</value>
+  </data>
+  <data name="Shelters" xml:space="preserve">
+    <value>Abris</value>
+  </data>
+  <data name="Alerts" xml:space="preserve">
+    <value>Alertes</value>
+  </data>
+  <data name="Predictions" xml:space="preserve">
+    <value>Prévisions</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Rapports</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Déconnexion</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="AdminPanel" xml:space="preserve">
+    <value>Panneau d'administration</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Connexion</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>S'inscrire</value>
+  </data>
+  
+  <!-- Hero Section -->
+  <data name="StayAheadDisaster" xml:space="preserve">
+    <value>Gardez une longueur d'avance sur les situations de catastrophe</value>
+  </data>
+  <data name="StayClearDanger" xml:space="preserve">
+    <value>Restez à l'écart du danger</value>
+  </data>
+  <data name="StayClearDangerDesc" xml:space="preserve">
+    <value>Si vous êtes pris dans une catastrophe, évitez les zones dangereuses et cherchez un abri immédiatement.</value>
+  </data>
+  <data name="ExpertInsights" xml:space="preserve">
+    <value>Informations d'experts</value>
+  </data>
+  <data name="ExploreRiskAssessments" xml:space="preserve">
+    <value>Explorer les évaluations des risques</value>
+  </data>
+  <data name="RegionalRiskAssessment" xml:space="preserve">
+    <value>Évaluation des risques régionaux</value>
+  </data>
+  <data name="RegionalRiskDesc" xml:space="preserve">
+    <value>Analyser les modèles de risque de catastrophe dans différentes régions et zones.</value>
+  </data>
+  <data name="DisasterAnalytics" xml:space="preserve">
+    <value>Analyse des catastrophes</value>
+  </data>
+  <data name="DisasterAnalyticsDesc" xml:space="preserve">
+    <value>Voir des analyses complètes et des informations sur les modèles et tendances des catastrophes.</value>
+  </data>
+  <data name="IoTMonitoringNetwork" xml:space="preserve">
+    <value>Réseau de surveillance IoT</value>
+  </data>
+  <data name="IoTMonitoringDesc" xml:space="preserve">
+    <value>Surveillance en temps réel des réseaux de capteurs suivant les conditions environnementales.</value>
+  </data>
+  
+  <!-- Actions -->
+  <data name="Save" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Modifier</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Créer</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Soumettre</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Rechercher</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>Voir</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Télécharger</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Téléverser</value>
+  </data>
+  
+  <!-- Disaster Types -->
+  <data name="Flood" xml:space="preserve">
+    <value>Inondation</value>
+  </data>
+  <data name="Earthquake" xml:space="preserve">
+    <value>Tremblement de terre</value>
+  </data>
+  <data name="Fire" xml:space="preserve">
+    <value>Incendie</value>
+  </data>
+  <data name="Hurricane" xml:space="preserve">
+    <value>Ouragan</value>
+  </data>
+  <data name="Tornado" xml:space="preserve">
+    <value>Tornade</value>
+  </data>
+  <data name="Tsunami" xml:space="preserve">
+    <value>Tsunami</value>
+  </data>
+  <data name="Landslide" xml:space="preserve">
+    <value>Glissement de terrain</value>
+  </data>
+  <data name="Drought" xml:space="preserve">
+    <value>Sécheresse</value>
+  </data>
+  <data name="Wildfire" xml:space="preserve">
+    <value>Feu de forêt</value>
+  </data>
+  <data name="Volcano" xml:space="preserve">
+    <value>Volcan</value>
+  </data>
+  
+  <!-- Severity Levels -->
+  <data name="Low" xml:space="preserve">
+    <value>Faible</value>
+  </data>
+  <data name="Moderate" xml:space="preserve">
+    <value>Modéré</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>Élevé</value>
+  </data>
+  <data name="Severe" xml:space="preserve">
+    <value>Grave</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>Critique</value>
+  </data>
+  <data name="Extreme" xml:space="preserve">
+    <value>Extrême</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Avertissement</value>
+  </data>
+  <data name="Emergency" xml:space="preserve">
+    <value>Urgence</value>
+  </data>
+  
+  <!-- Messages -->
+  <data name="Welcome" xml:space="preserve">
+    <value>Bienvenue</value>
+  </data>
+  <data name="SuccessMessage" xml:space="preserve">
+    <value>Opération réussie</value>
+  </data>
+  <data name="ErrorMessage" xml:space="preserve">
+    <value>Une erreur s'est produite. Veuillez réessayer</value>
+  </data>
+  <data name="NoDataAvailable" xml:space="preserve">
+    <value>Aucune donnée disponible</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Chargement...</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Veuillez patienter</value>
+  </data>
+  
+  <!-- Alerts & Notifications -->
+  <data name="DisasterAlert" xml:space="preserve">
+    <value>Alerte de catastrophe</value>
+  </data>
+  <data name="EvacuateNow" xml:space="preserve">
+    <value>Évacuez maintenant</value>
+  </data>
+  <data name="TakeShelter" xml:space="preserve">
+    <value>Mettez-vous à l'abri</value>
+  </data>
+  <data name="StaySafe" xml:space="preserve">
+    <value>Restez en sécurité</value>
+  </data>
+  <data name="EmergencyContact" xml:space="preserve">
+    <value>Contact d'urgence</value>
+  </data>
+  <data name="NearestShelter" xml:space="preserve">
+    <value>Abri le plus proche</value>
+  </data>
+  
+  <!-- Forms -->
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Mot de passe</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nom d'utilisateur</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Numéro de téléphone</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Adresse</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Ville</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Emplacement</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Heure</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Statut</value>
+  </data>
+  
+  <!-- Language Names -->
+  <data name="Language" xml:space="preserve">
+    <value>Langue</value>
+  </data>
+  <data name="SelectLanguage" xml:space="preserve">
+    <value>Sélectionner la langue</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="LanguageArabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LanguagePortuguese" xml:space="preserve">
+    <value>Português</value>
+  </data>
+  <data name="LanguageHausa" xml:space="preserve">
+    <value>Hausa</value>
+  </data>
+  <data name="LanguageYoruba" xml:space="preserve">
+    <value>Yorùbá</value>
+  </data>
+  <data name="LanguageIgbo" xml:space="preserve">
+    <value>Igbo</value>
+  </data>
+  
+  <!-- Additional View Strings -->
+  <data name="WelcomeUser" xml:space="preserve">
+    <value>Bienvenue, {0}</value>
+  </data>
+  <data name="GetUpdatedStatistics" xml:space="preserve">
+    <value>Obtenez des statistiques et des alertes à jour sur les catastrophes grâce à notre système de surveillance</value>
+  </data>
+  <data name="RegisterEarlyWarning" xml:space="preserve">
+    <value>Inscrivez-vous à notre système d'alerte précoce</value>
+  </data>
+  <data name="WhatToDoInDisaster" xml:space="preserve">
+    <value>Que faire en cas de catastrophe</value>
+  </data>
+  <data name="DisasterTips" xml:space="preserve">
+    <value>Dans une situation inévitable ; voici quelques conseils qui peuvent vous aider à vous sauver</value>
+  </data>
+  <data name="PlanAhead" xml:space="preserve">
+    <value>Planifier à l'avance</value>
+  </data>
+  <data name="PlanAheadDesc" xml:space="preserve">
+    <value>Le kit d'urgence doit être à portée de main comprenant : lampe torche, piles de rechange, téléphone portable, vêtements chauds, numéros importants, eau, nourriture, premiers soins, médicaments et articles pour bébé.</value>
+  </data>
+  <data name="MoveHigherGround" xml:space="preserve">
+    <value>Déplacez-vous vers un terrain plus élevé</value>
+  </data>
+  <data name="MoveHigherGroundDesc" xml:space="preserve">
+    <value>Se déplacer vers un terrain plus élevé est important car cela réduit votre risque d'être emporté par les eaux ou de vous retrouver piégé dans une situation dangereuse.</value>
+  </data>
+  <data name="WaitEmergencyWorkers" xml:space="preserve">
+    <value>Attendez les secours d'urgence</value>
+  </data>
+  <data name="WaitEmergencyWorkersDesc" xml:space="preserve">
+    <value>Attendre les secours est une étape importante pour rester en sécurité. Si vous ne pouvez pas évacuer ou atteindre un terrain plus élevé, appelez à l'aide et attendez le personnel de secours.</value>
+  </data>
+  <data name="FollowInstructions" xml:space="preserve">
+    <value>Suivez les instructions</value>
+  </data>
+  <data name="FollowInstructionsDesc" xml:space="preserve">
+    <value>Lorsque le personnel de secours arrive, écoutez attentivement leurs instructions et suivez-les de près. Ils peuvent avoir des procédures spécifiques pour évacuer la zone en toute sécurité.</value>
+  </data>
+  <data name="BePrepared" xml:space="preserve">
+    <value>Soyez prêt</value>
+  </data>
+  <data name="BePreparedDesc" xml:space="preserve">
+    <value>Gardez des fournitures d'urgence à portée de main, comme de la nourriture, de l'eau et une trousse de premiers soins. Restez connecté avec votre téléphone pour rester en contact avec le personnel de secours.</value>
+  </data>
+</root>

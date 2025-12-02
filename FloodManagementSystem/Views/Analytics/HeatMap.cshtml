@@ -1,0 +1,265 @@
+@{
+    ViewData["Title"] = "Geographic Heat Map";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-map-marked-alt me-2"></i>Geographic Heat Map
+                    </h1>
+                    <p class="text-muted mb-0">Incident distribution and impact visualization</p>
+                </div>
+                <div>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="row align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold">Disaster Type</label>
+                            <select id="disasterTypeFilter" class="form-select">
+                                <option value="">All Disasters</option>
+                                <option value="Flood">Flood</option>
+                                <option value="Earthquake">Earthquake</option>
+                                <option value="Fire">Fire</option>
+                                <option value="Hurricane">Hurricane</option>
+                                <option value="Tornado">Tornado</option>
+                                <option value="Landslide">Landslide</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold">Start Date</label>
+                            <input type="date" id="startDateFilter" class="form-control" 
+                                   value="@DateTime.UtcNow.AddMonths(-1).ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold">End Date</label>
+                            <input type="date" id="endDateFilter" class="form-control" 
+                                   value="@DateTime.UtcNow.ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-md-3">
+                            <button onclick="updateHeatMap()" class="btn btn-primary w-100">
+                                <i class="fas fa-sync-alt me-2"></i>Update Map
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Container -->
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div id="heatMap" style="height: 600px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white;">
+                        <div class="text-center">
+                            <i class="fas fa-map-marked-alt fa-5x mb-3 opacity-50"></i>
+                            <h4>Interactive Heat Map</h4>
+                            <p class="mb-0">Geographic visualization of disaster incidents</p>
+                            <small class="text-white-50">Integration with mapping library (Leaflet/Google Maps) required</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Panel -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div id="heatMapStats">
+                        <div class="mb-3">
+                            <p class="text-muted mb-1 small">Total Incidents</p>
+                            <h4 class="mb-0" id="totalIncidents">-</h4>
+                        </div>
+                        <div class="mb-3">
+                            <p class="text-muted mb-1 small">Affected Locations</p>
+                            <h4 class="mb-0" id="affectedLocations">-</h4>
+                        </div>
+                        <div class="mb-3">
+                            <p class="text-muted mb-1 small">Highest Impact</p>
+                            <h5 class="mb-0" id="highestImpact">-</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>Legend</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="badge bg-danger me-2" style="width: 20px; height: 20px;"></span>
+                        <span>Critical Severity</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="badge bg-warning me-2" style="width: 20px; height: 20px;"></span>
+                        <span>High Severity</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="badge bg-info me-2" style="width: 20px; height: 20px;"></span>
+                        <span>Medium Severity</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-success me-2" style="width: 20px; height: 20px;"></span>
+                        <span>Low Severity</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Locations Table -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0"><i class="fas fa-map-pin me-2"></i>Top Affected Locations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="locationsTable">
+                            <thead>
+                                <tr>
+                                    <th>Location</th>
+                                    <th>Incident Count</th>
+                                    <th>Severity</th>
+                                    <th>Coordinates</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="locationsTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>Loading data...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function updateHeatMap() {
+            const disasterType = document.getElementById('disasterTypeFilter').value;
+            const startDate = document.getElementById('startDateFilter').value;
+            const endDate = document.getElementById('endDateFilter').value;
+
+            // Show loading
+            document.getElementById('locationsTableBody').innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center text-muted">
+                        <i class="fas fa-spinner fa-spin me-2"></i>Loading data...
+                    </td>
+                </tr>
+            `;
+
+            // Fetch heat map data
+            fetch(`@Url.Action("GetHeatMapData")?disasterType=${disasterType}&startDate=${startDate}&endDate=${endDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error:', data.error);
+                        return;
+                    }
+                    
+                    // Update statistics
+                    document.getElementById('totalIncidents').textContent = data.reduce((sum, item) => sum + item.incidentCount, 0);
+                    document.getElementById('affectedLocations').textContent = data.length;
+                    
+                    if (data.length > 0) {
+                        const topLocation = data[0];
+                        document.getElementById('highestImpact').textContent = topLocation.location;
+                    }
+
+                    // Update table
+                    const tbody = document.getElementById('locationsTableBody');
+                    tbody.innerHTML = '';
+                    
+                    if (data.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No data available for the selected filters</td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    data.forEach(location => {
+                        const row = document.createElement('tr');
+                        const severityClass = getSeverityClass(location.severity);
+                        row.innerHTML = `
+                            <td><strong>${location.location}</strong></td>
+                            <td><span class="badge bg-primary">${location.incidentCount}</span></td>
+                            <td><span class="badge ${severityClass}">${location.severity}</span></td>
+                            <td><small>${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}</small></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" onclick="focusLocation(${location.latitude}, ${location.longitude})">
+                                    <i class="fas fa-crosshairs"></i>
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+
+                    // In a real implementation, update the actual map here
+                    // Example: updateMapMarkers(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching heat map data:', error);
+                    document.getElementById('locationsTableBody').innerHTML = `
+                        <tr>
+                            <td colspan="5" class="text-center text-danger">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Error loading data
+                            </td>
+                        </tr>
+                    `;
+                });
+        }
+
+        function getSeverityClass(severity) {
+            switch(severity.toLowerCase()) {
+                case 'critical': return 'bg-danger';
+                case 'high': return 'bg-warning';
+                case 'medium': return 'bg-info';
+                case 'low': return 'bg-success';
+                default: return 'bg-secondary';
+            }
+        }
+
+        function focusLocation(lat, lng) {
+            // In a real implementation, this would center the map on the location
+            console.log(`Focus on: ${lat}, ${lng}`);
+            alert(`Map would focus on coordinates: ${lat}, ${lng}`);
+        }
+
+        // Load initial data
+        document.addEventListener('DOMContentLoaded', function() {
+            updateHeatMap();
+        });
+    </script>
+}

@@ -1,0 +1,295 @@
+@model List<GlobalDisasterManagement.Models.WaterLevelSensor>
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<GlobalDisasterManagement.Resources.SharedResources> Localizer
+
+@{
+    ViewData["Title"] = Localizer["Water Level Monitoring"];
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="display-4 mb-2">
+                    <i class="fas fa-water text-info"></i>
+                    @Localizer["Water Level Monitoring"]
+                </h1>
+                <p class="text-muted">@Localizer["Real-time monitoring of water levels in rivers, dams, and water bodies"]</p>
+            </div>
+            <div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> @Localizer["Back to Dashboard"]
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-1">@Localizer["Total Sensors"]</h6>
+                    <h2 class="mb-0 text-info">@Model.Count</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-1">@Localizer["Active"]</h6>
+                    <h2 class="mb-0 text-success">@Model.Count(s => s.Status == GlobalDisasterManagement.Models.SensorStatus.Active)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-1">@Localizer["Critical"]</h6>
+                    <h2 class="mb-0 text-danger">@Model.Count(s => s.CurrentStatus == GlobalDisasterManagement.Models.WaterLevelStatus.Critical)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-1">@Localizer["Warning"]</h6>
+                    <h2 class="mb-0 text-warning">@Model.Count(s => s.CurrentStatus == GlobalDisasterManagement.Models.WaterLevelStatus.Warning)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Water Level Chart -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line"></i> @Localizer["Water Level Trends"]
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="waterLevelChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sensors Grid -->
+    <div class="row g-3">
+        @foreach (var sensor in Model.OrderByDescending(s => s.CurrentLevel))
+        {
+            var statusClass = sensor.CurrentStatus switch
+            {
+                GlobalDisasterManagement.Models.WaterLevelStatus.Critical => "danger",
+                GlobalDisasterManagement.Models.WaterLevelStatus.Danger => "warning",
+                GlobalDisasterManagement.Models.WaterLevelStatus.Warning => "info",
+                GlobalDisasterManagement.Models.WaterLevelStatus.Normal => "success",
+                _ => "secondary"
+            };
+
+            var statusIcon = sensor.CurrentStatus switch
+            {
+                GlobalDisasterManagement.Models.WaterLevelStatus.Critical => "exclamation-triangle",
+                GlobalDisasterManagement.Models.WaterLevelStatus.Danger => "exclamation-circle",
+                GlobalDisasterManagement.Models.WaterLevelStatus.Warning => "info-circle",
+                GlobalDisasterManagement.Models.WaterLevelStatus.Normal => "check-circle",
+                _ => "question-circle"
+            };
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="card-title mb-1">@sensor.Name</h5>
+                                <small class="text-muted">@sensor.DeviceId</small>
+                            </div>
+                            <span class="badge bg-@statusClass">
+                                <i class="fas fa-@statusIcon"></i> @sensor.CurrentStatus
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">@Localizer["Current Level"]</span>
+                                <strong class="text-@statusClass">@(sensor.CurrentLevel?.ToString("F2") ?? "N/A")m</strong>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                @{
+                                    var percentage = sensor.CurrentLevel.HasValue
+                                        ? (sensor.CurrentLevel.Value / sensor.CriticalLevel * 100)
+                                        : 0;
+                                }
+                                <div class="progress-bar bg-@statusClass" role="progressbar" 
+                                     style="width: @percentage%" 
+                                     aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-1">
+                                <small class="text-muted">0m</small>
+                                <small class="text-muted">@Localizer["Critical"]: @(sensor.CriticalLevel.ToString("F2"))m</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <p class="mb-1">
+                                <i class="fas fa-map-marker-alt text-primary"></i>
+                                <small>@sensor.Address</small>
+                            </p>
+                            <p class="mb-1">
+                                <i class="fas fa-water text-info"></i>
+                                <small>@sensor.WaterBodyType</small>
+                            </p>
+                            <p class="mb-0">
+                                <i class="fas fa-clock text-muted"></i>
+                                <small>
+                                    @if (sensor.CurrentReadingTime.HasValue)
+                                    {
+                                        var timeAgo = DateTime.UtcNow - sensor.CurrentReadingTime.Value;
+                                        if (timeAgo.TotalMinutes < 60)
+                                        {
+                                            <span>@((int)timeAgo.TotalMinutes)m ago</span>
+                                        }
+                                        else if (timeAgo.TotalHours < 24)
+                                        {
+                                            <span>@((int)timeAgo.TotalHours)h ago</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@sensor.CurrentReadingTime.Value.ToString("MMM dd, HH:mm")</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>@Localizer["Never"]</span>
+                                    }
+                                </small>
+                            </p>
+                        </div>
+
+                        <div class="d-grid">
+                            <a href="@Url.Action("SensorDetails", new { id = sensor.Id })" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-chart-area"></i> @Localizer["View Details"]
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle"></i>
+                    @Localizer["No water level sensors registered yet"]
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@7.0.0/dist/browser/signalr.min.js"></script>
+    <script>
+        // Water Level Chart
+        const ctx = document.getElementById('waterLevelChart').getContext('2d');
+        const sensorData = @Html.Raw(Json.Serialize(Model.Select(s => new { 
+            name = s.Name, 
+            level = s.CurrentLevel ?? 0, 
+            critical = s.CriticalLevel,
+            high = s.WarningLevel,
+            normal = s.NormalLevel
+        })));
+
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: sensorData.map(s => s.name),
+                datasets: [
+                    {
+                        label: '@Localizer["Current Level"]',
+                        data: sensorData.map(s => s.level),
+                        backgroundColor: sensorData.map(s => {
+                            if (s.level >= s.critical) return 'rgba(220, 53, 69, 0.7)';
+                            if (s.level >= s.high) return 'rgba(255, 193, 7, 0.7)';
+                            return 'rgba(25, 135, 84, 0.7)';
+                        }),
+                        borderColor: sensorData.map(s => {
+                            if (s.level >= s.critical) return 'rgb(220, 53, 69)';
+                            if (s.level >= s.high) return 'rgb(255, 193, 7)';
+                            return 'rgb(25, 135, 84)';
+                        }),
+                        borderWidth: 2
+                    },
+                    {
+                        label: '@Localizer["Normal Level"]',
+                        data: sensorData.map(s => s.normal),
+                        backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                        borderColor: 'rgb(13, 110, 253)',
+                        borderWidth: 1,
+                        borderDash: [5, 5],
+                        type: 'line'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '@Localizer["Water Level (meters)"]'
+                        }
+                    }
+                }
+            }
+        });
+
+        // SignalR Connection
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/iotMonitoringHub")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("WaterLevelUpdate", function (data) {
+            console.log("Water Level Update:", data);
+            // Update chart and cards in real-time
+            const index = chart.data.labels.indexOf(data.SensorName);
+            if (index !== -1) {
+                chart.data.datasets[0].data[index] = data.Reading.Level;
+                chart.update();
+            }
+            // Show toast notification
+            showToast('@Localizer["Water Level Update"]', `${data.SensorName}: ${data.Reading.Level}m`);
+        });
+
+        connection.start()
+            .then(() => {
+                console.log("SignalR Connected");
+                connection.invoke("SubscribeToSensorType", 1) // WaterLevel = 1
+                    .catch(err => console.error(err));
+            })
+            .catch(err => console.error(err));
+
+        function showToast(title, message) {
+            // Simple toast implementation
+            console.log(`${title}: ${message}`);
+        }
+    </script>
+}

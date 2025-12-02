@@ -1,0 +1,378 @@
+@model List<GlobalDisasterManagement.Models.WeatherSensor>
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<GlobalDisasterManagement.Resources.SharedResources> Localizer
+
+@{
+    ViewData["Title"] = Localizer["Weather Monitoring"];
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="display-4 mb-2">
+                    <i class="fas fa-cloud-sun text-warning"></i>
+                    @Localizer["Weather Monitoring"]
+                </h1>
+                <p class="text-muted">@Localizer["Comprehensive weather station data and environmental monitoring"]</p>
+            </div>
+            <div>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> @Localizer["Back to Dashboard"]
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-1">@Localizer["Total Stations"]</h6>
+                    <h2 class="mb-0 text-warning">@Model.Count</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-1">@Localizer["Active"]</h6>
+                    <h2 class="mb-0 text-success">@Model.Count(s => s.Status == GlobalDisasterManagement.Models.SensorStatus.Active)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-1">@Localizer["Avg Temperature"]</h6>
+                    @{
+                        var avgTemp = Model.Where(s => s.CurrentTemperature.HasValue).Any() 
+                            ? Model.Where(s => s.CurrentTemperature.HasValue).Average(s => s.CurrentTemperature.Value) 
+                            : 0;
+                    }
+                    <h2 class="mb-0 text-info">@avgTemp.ToString("F1")°C</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-1">@Localizer["High Wind Areas"]</h6>
+                    <h2 class="mb-0 text-danger">@Model.Count(s => s.CurrentWindSpeed.HasValue && s.CurrentWindSpeed.Value > 40)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather Charts -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-3 mb-lg-0">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-temperature-high"></i> @Localizer["Temperature Distribution"]
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="temperatureChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-wind"></i> @Localizer["Wind Speed Readings"]
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="windChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather Stations Grid -->
+    <div class="row g-3">
+        @foreach (var sensor in Model.OrderBy(s => s.Name))
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="card-title mb-1">@sensor.Name</h5>
+                                <small class="text-muted">@sensor.DeviceId</small>
+                            </div>
+                            <span class="badge bg-@(sensor.Status == GlobalDisasterManagement.Models.SensorStatus.Active ? "success" : "secondary")">
+                                @sensor.Status
+                            </span>
+                        </div>
+
+                        <!-- Weather Metrics Grid -->
+                        <div class="row g-2 mb-3">
+                            <!-- Temperature -->
+                            <div class="col-6">
+                                <div class="text-center p-2 bg-light rounded">
+                                    <i class="fas fa-thermometer-half text-danger"></i>
+                                    <small class="text-muted d-block">@Localizer["Temperature"]</small>
+                                    <strong>@(sensor.CurrentTemperature?.ToString("F1") ?? "N/A")°C</strong>
+                                </div>
+                            </div>
+                            
+                            <!-- Humidity -->
+                            <div class="col-6">
+                                <div class="text-center p-2 bg-light rounded">
+                                    <i class="fas fa-tint text-info"></i>
+                                    <small class="text-muted d-block">@Localizer["Humidity"]</small>
+                                    <strong>@(sensor.CurrentHumidity?.ToString("F0") ?? "N/A")%</strong>
+                                </div>
+                            </div>
+                            
+                            <!-- Wind Speed -->
+                            <div class="col-6">
+                                <div class="text-center p-2 bg-light rounded">
+                                    <i class="fas fa-wind text-primary"></i>
+                                    <small class="text-muted d-block">@Localizer["Wind Speed"]</small>
+                                    <strong>@(sensor.CurrentWindSpeed?.ToString("F1") ?? "N/A") km/h</strong>
+                                </div>
+                            </div>
+                            
+                            <!-- Pressure -->
+                            <div class="col-6">
+                                <div class="text-center p-2 bg-light rounded">
+                                    <i class="fas fa-compress text-secondary"></i>
+                                    <small class="text-muted d-block">@Localizer["Pressure"]</small>
+                                    <strong>@(sensor.CurrentPressure?.ToString("F0") ?? "N/A") hPa</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Location & Last Update -->
+                        <div class="mb-3">
+                            <p class="mb-1">
+                                <i class="fas fa-map-marker-alt text-primary"></i>
+                                <small>@sensor.Address</small>
+                            </p>
+                            <p class="mb-0">
+                                <i class="fas fa-clock text-muted"></i>
+                                <small>
+                                    @if (sensor.LastDataReceivedDate.HasValue)
+                                    {
+                                        var timeAgo = DateTime.UtcNow - sensor.LastDataReceivedDate.Value;
+                                        if (timeAgo.TotalMinutes < 60)
+                                        {
+                                            <span>@((int)timeAgo.TotalMinutes)m ago</span>
+                                        }
+                                        else if (timeAgo.TotalHours < 24)
+                                        {
+                                            <span>@((int)timeAgo.TotalHours)h ago</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@sensor.LastDataReceivedDate.Value.ToString("MMM dd, HH:mm")</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>@Localizer["Never"]</span>
+                                    }
+                                </small>
+                            </p>
+                        </div>
+
+                        <!-- Weather Alerts -->
+                        @if (sensor.CurrentWindSpeed.HasValue && sensor.CurrentWindSpeed.Value > 50)
+                        {
+                            <div class="alert alert-danger py-2 px-3 mb-2">
+                                <small>
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    @Localizer["High wind warning"]
+                                </small>
+                            </div>
+                        }
+                        else if (sensor.CurrentTemperature.HasValue && sensor.CurrentTemperature.Value > 35)
+                        {
+                            <div class="alert alert-warning py-2 px-3 mb-2">
+                                <small>
+                                    <i class="fas fa-sun"></i>
+                                    @Localizer["High temperature alert"]
+                                </small>
+                            </div>
+                        }
+
+                        <div class="d-grid">
+                            <a href="@Url.Action("SensorDetails", new { id = sensor.Id })" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-chart-line"></i> @Localizer["View History"]
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle"></i>
+                    @Localizer["No weather stations registered yet"]
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@7.0.0/dist/browser/signalr.min.js"></script>
+    <script>
+        // Temperature Chart
+        const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+        const sensorData = @Html.Raw(Json.Serialize(Model.Select(s => new { 
+            name = s.Name, 
+            temp = s.CurrentTemperature ?? 0,
+            humidity = s.CurrentHumidity ?? 0
+        })));
+
+        const tempChart = new Chart(tempCtx, {
+            type: 'line',
+            data: {
+                labels: sensorData.map(s => s.name),
+                datasets: [
+                    {
+                        label: '@Localizer["Temperature (°C)"]',
+                        data: sensorData.map(s => s.temp),
+                        backgroundColor: 'rgba(220, 53, 69, 0.2)',
+                        borderColor: 'rgb(220, 53, 69)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    },
+                    {
+                        label: '@Localizer["Humidity (%)"]',
+                        data: sensorData.map(s => s.humidity),
+                        backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                        borderColor: 'rgb(13, 110, 253)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '@Localizer["Temperature (°C)"]'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '@Localizer["Humidity (%)"]'
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    }
+                }
+            }
+        });
+
+        // Wind Chart
+        const windCtx = document.getElementById('windChart').getContext('2d');
+        const windData = @Html.Raw(Json.Serialize(Model.Select(s => new { 
+            name = s.Name, 
+            wind = s.CurrentWindSpeed ?? 0
+        })));
+
+        const windChart = new Chart(windCtx, {
+            type: 'bar',
+            data: {
+                labels: windData.map(s => s.name),
+                datasets: [{
+                    label: '@Localizer["Wind Speed (km/h)"]',
+                    data: windData.map(s => s.wind),
+                    backgroundColor: windData.map(w => {
+                        if (w.wind > 50) return 'rgba(220, 53, 69, 0.7)';
+                        if (w.wind > 30) return 'rgba(255, 193, 7, 0.7)';
+                        return 'rgba(13, 110, 253, 0.7)';
+                    }),
+                    borderColor: windData.map(w => {
+                        if (w.wind > 50) return 'rgb(220, 53, 69)';
+                        if (w.wind > 30) return 'rgb(255, 193, 7)';
+                        return 'rgb(13, 110, 253)';
+                    }),
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '@Localizer["Wind Speed (km/h)"]'
+                        }
+                    }
+                }
+            }
+        });
+
+        // SignalR Connection
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/iotMonitoringHub")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("WeatherUpdate", function (data) {
+            console.log("Weather Update:", data);
+            // Update charts in real-time
+            const tempIndex = tempChart.data.labels.indexOf(data.SensorName);
+            const windIndex = windChart.data.labels.indexOf(data.SensorName);
+            
+            if (tempIndex !== -1) {
+                tempChart.data.datasets[0].data[tempIndex] = data.Reading.Temperature || 0;
+                tempChart.data.datasets[1].data[tempIndex] = data.Reading.Humidity || 0;
+                tempChart.update();
+            }
+            
+            if (windIndex !== -1) {
+                windChart.data.datasets[0].data[windIndex] = data.Reading.WindSpeed || 0;
+                windChart.update();
+            }
+        });
+
+        connection.start()
+            .then(() => {
+                console.log("SignalR Connected");
+                connection.invoke("SubscribeToSensorType", 3) // Weather = 3
+                    .catch(err => console.error(err));
+            })
+            .catch(err => console.error(err));
+    </script>
+}
