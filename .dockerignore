@@ -1,0 +1,93 @@
+# .NET build artifacts
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.dll
+*.exe
+*.pdb
+*.log
+
+# Visual Studio
+.vs/
+.vscode/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+*.userprefs
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# NuGet Packages
+*.nupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+
+# Database files
+*.mdf
+*.ldf
+
+# Uploads directory (except .gitkeep)
+wwwroot/Uploads/*
+!wwwroot/Uploads/.gitkeep
+
+# Logs
+logs/
+*.log
+Logs/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Database connection strings (should be in user secrets or environment variables)
+appsettings.Development.json
+appsettings.Production.json
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Secrets
+secrets.json
+*.pfx
+*.key

@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: floodmanagement-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Passw0rd
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - floodmanagement-network
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  # Redis Cache (Optional)
+  redis:
+    image: redis:7-alpine
+    container_name: floodmanagement-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - floodmanagement-network
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ASP.NET Core Application
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: floodmanagement-webapp
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=FloodManagementDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;
+      - EmailSettings__SmtpServer=smtp.gmail.com
+      - EmailSettings__SmtpPort=587
+      - EmailSettings__SenderEmail=your-email@gmail.com
+      - EmailSettings__SenderPassword=your-app-password
+      - EmailSettings__SenderName=Lagos Flood Detection System
+      - EmailSettings__EnableSsl=true
+    ports:
+      - "8080:80"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - floodmanagement-network
+    volumes:
+      - webapp-uploads:/app/wwwroot/Uploads
+    restart: unless-stopped
+
+volumes:
+  sqlserver-data:
+    driver: local
+  redis-data:
+    driver: local
+  webapp-uploads:
+    driver: local
+
+networks:
+  floodmanagement-network:
+    driver: bridge
