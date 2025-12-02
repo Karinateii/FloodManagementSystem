@@ -1,7 +1,11 @@
 MIT License
 
+<<<<<<< HEAD
 Copyright (c) 2024-2025 Babcock University - Computer Science Department
 Global Disaster Management System (GDMS) Project Team
+=======
+Copyright (c) 2023 Karinateii
+>>>>>>> cfa19376fe2f1e34b7f618fdeed34c7ee5f3b899
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,8 +24,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+<<<<<<< HEAD
 
 ---
 
 This is an academic project developed as part of the Computer Science Final Year
 Project at Babcock University, Ilishan-Remo, Ogun State, Nigeria (2024/2025).
+=======
+>>>>>>> cfa19376fe2f1e34b7f618fdeed34c7ee5f3b899
