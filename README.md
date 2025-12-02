@@ -11,7 +11,7 @@ A comprehensive disaster management and emergency response platform supporting m
 
 **Institution:** Babcock University  
 **Course:** Computer Science Final Year Project  
-**Academic Year:** 2024/2025  
+**Academic Year:** 2023  
 **Status:** In Development
 
 ---
