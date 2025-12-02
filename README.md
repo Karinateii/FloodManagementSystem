@@ -443,7 +443,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Project Team:** Babcock University Computer Science Department  
 **Institution:** Babcock University, Ilishan-Remo, Ogun State, Nigeria  
-**Academic Year:** 2024/2025
+**Academic Year:** 2023
 
 **Repository:** [https://github.com/Karinateii/FloodManagementSystem](https://github.com/Karinateii/FloodManagementSystem)
 
@@ -462,4 +462,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ by Babcock University Computer Science Students**
+**Built with ❤️ by Ebenezer**
