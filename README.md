@@ -61,8 +61,6 @@ A comprehensive disaster management and emergency response platform supporting m
 
 ## 🛠️ Technology Stack
 
-## 🛠️ Technology Stack
-
 ### Backend
 - **Framework**: ASP.NET Core 8.0 MVC
 - **Database**: SQL Server 2022 with Entity Framework Core 8.0
